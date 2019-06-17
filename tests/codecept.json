@@ -1,0 +1,18 @@
+{
+  "tests": "./*_test.js",
+  "timeout": 10000,
+  "output": "./output/",
+  "helpers": {
+    "WebDriverIO": {
+      "url": "http://gulp.ga",
+      "browser": "chrome",
+      "windowSize": "1366x768"
+    }
+  },
+  "include": {
+    "I": "./steps_file.js"
+  },
+  "bootstrap": false,
+  "mocha": {},
+  "name": "tests"
+}

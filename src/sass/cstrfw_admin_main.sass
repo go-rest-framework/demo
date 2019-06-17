@@ -1,0 +1,38 @@
+body
+
+#res
+  background: red
+
+.mainwrap_sidebar
+  background: white
+  height: 100vh
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3)
+
+.mainwrap_content
+  padding: 2em
+
+.userinfo
+  display: flex
+  .userinfo_ava
+    border-right: 1px solid rgba(0,0,0,0.2)
+    img
+      width: 6em
+      height: 6em
+  .userinfo_content
+    flex-grow: 1
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    padding: 0.5em
+    .userinfo_content_username
+      text-align: right
+    .userinfo_content_role
+      text-align: right
+    .userinfo_content_btns
+      display: flex
+      .userinfo_content_btns_edit
+        flex-grow: 1
+        text-align: right
+      .userinfo_content_btns_exit
+        flex-grow: 1
+        text-align: right
