@@ -172,5 +172,6 @@ let loginformstruct = new Struct({
 });
 
 if (true) {
-    App.render();
+    //App.render();
+    loginformstruct.render();
 }
