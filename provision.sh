@@ -10,7 +10,7 @@ sudo apt-get -y upgrade
 
 sudo apt-get install -y nginx
 sudo apt-get install -y curl
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo apt-get install -y xvfb
 sudo apt-get install -y htop
