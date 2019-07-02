@@ -115,33 +115,63 @@ Scenario('TestUsersSuccess', async (I) => {
 });
 
 Scenario('TestElementsSuccess', async (I) => {
-    /*
-       TestElementsPageList
-       Click Elements Menu
-       See Elements List
-       TestElementsCreate
-       Click Elements Add btn
-       Fill form with errors
-       Fill form without errors
-       Upload imgs in content
-       See new Element in list
-       TestElementsSearch
-       Go to elements Page
-       Get list count
-       Find by title
-       Find by tags
-       Find by id
-       Sort desc
-       TestElementsUpdate
-       Go to elements Page
-       Click element edite btn
-       Change title
-       See new title in list
-       TestElementsDelete
-       Go to elements Page
-       Click element delete btn
-       See success delete element*/
-    I.click('#users_menu_btn');
-    I.waitForElement('#users_search_all');
-    let numOfElements = I.grabNumberOfVisibleElements('p');
+    I.amOnPage('/');
+    I.waitForElement('#loginsubmit', 5);
+    I.fillField('#loginemail', 'admin@admin.a');
+    I.fillField('#loginpassword', 'adminpass');
+    I.click('#loginsubmit');
+    I.wait(3);
+    I.click('#contents_menu_btn');
+    I.waitForElement('#elements_search_all', 5);
+
+    I.click('#element_add_btn');
+    I.waitForElement('#element_form', 5);
+    I.fillField('#element_form_urld', 'testelement');
+    I.fillField('#element_form_title', 'testelement title');
+    I.fillField('#element_form_description', 'testelement description');
+    I.fillField('#element_form_content', 'test test test');
+    I.fillField('#element_form_meta_title', 'testelement meta title');
+    I.fillField('#element_form_meta_descr', 'testelement meta description');
+    I.fillField('#element_form_tags', 'test, testing');
+    I.selectOption('#element_form_status', 'active');
+    I.click('#element_form_submit');
+    I.waitForText('New element successfully created', 10);
+    I.see('testelement title');
+    I.see('#users_search_all');
+
+    I.fillField('#users_search_all', 'no testelement title');
+    I.wait(5);
+    let n1 = await I.grabNumberOfVisibleElements('.card');
+    if (n1 != 0) {
+        I.see('search not existing element error');
+    }
+
+    I.fillField('#users_search_all', 'testelement title');
+    I.wait(5);
+    let n2 = await I.grabNumberOfVisibleElements('.card');
+    if (n2 != 1) {
+        I.see('search existing element error');
+    }
+
+    //TODO test sort
+
+    I.click('.edit_btn');
+    I.waitForElement('#element_form', 5);
+
+    I.fillField('#element_form_title', 'testelement title2');
+
+    I.click('#user_form_submit');
+    I.waitForText('Element successfully updated', 10);
+    I.fillField('#users_search_all', 'testelement title2');
+    I.wait(5);
+    let n3 = await I.grabNumberOfVisibleElements('.card');
+    if (n3 != 1) {
+        I.see('search by new title not work');
+    }
+
+    I.click('#delete_btn');
+    I.wait(3);
+    I.acceptPopup();
+    I.waitForText('Element delete successfully', 10);
+
 });
