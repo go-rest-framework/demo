@@ -73,7 +73,7 @@ gulp.task('html', function() {
 gulp.task('scripts', function() {
     return gulp.src('src/js/**/*.js')
         .pipe(babel({
-            presets: ['babel-preset-env']
+            presets: ['@babel/preset-env']
         }))
         .pipe(rename({
             suffix: '.min'
@@ -84,22 +84,22 @@ gulp.task('scripts', function() {
 });
 
 
-gulp.task('libinit', ['libscss', 'libsjs', 'fonts']);
+gulp.task('libinit', gulp.parallel('libscss', 'libsjs', 'fonts'));
 
 // Watch
 gulp.task('watch', function() {
     // Create LiveReload server
-    livereload.listen();
+    //livereload.listen();
 
     // Watch .scss files
-    gulp.watch('./src/sass/**/*.sass', ['styles']);
+    gulp.watch('./src/sass/**/*.sass', gulp.parallel('styles'));
 
     // Watch .jade files
-    gulp.watch('./src/tmpl/**/*.pug', ['html']);
+    gulp.watch('./src/tmpl/**/*.pug', gulp.parallel('html'));
 
     // Watch .js files
-    gulp.watch('./src/js/**/*.js', ['scripts']);
+    gulp.watch('./src/js/**/*.js', gulp.parallel('scripts'));
 });
 
 // Default task
-gulp.task('default', ['libinit', 'watch']);
+gulp.task('default', gulp.parallel('watch', 'libinit'));

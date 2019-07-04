@@ -105,10 +105,8 @@ let Elements = new List({
     events: function() {
         let self = this;
         $('#add_element_btn').bind('click', function() {
-            self.el.html('<div class="addformwrap">test</div>');
-
             new Struct({
-                el: self.el.find('.addformwrap'),
+                el: '#add_element_worm_wrap',
                 tmpl: 'views/elements/form',
                 events: function() {
                     new Form({
@@ -172,6 +170,6 @@ let loginformstruct = new Struct({
 });
 
 if (true) {
-    //App.render();
-    loginformstruct.render();
+    App.render();
+    //loginformstruct.render();
 }
