@@ -18,7 +18,7 @@ echo "    server {" >> /etc/nginx/sites-available/default
 echo "        listen 80;" >> /etc/nginx/sites-available/default
 echo "        listen [::]:80;" >> /etc/nginx/sites-available/default
 echo "        server_name ${NAME}.ga;" >> /etc/nginx/sites-available/default
-echo "        root /var/www/html/web;" >> /etc/nginx/sites-available/default
+echo "        root /var/www/html/dist;" >> /etc/nginx/sites-available/default
 echo "        index index.html;" >> /etc/nginx/sites-available/default
 echo "        sendfile  off;" >> /etc/nginx/sites-available/default
 echo "        location / {" >> /etc/nginx/sites-available/default
