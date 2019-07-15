@@ -13,7 +13,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import DirectionsIcon from '@material-ui/icons/Directions';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import Form from './Form.js';
 
 const useStyles = makeStyles({
     root: {
@@ -45,7 +44,7 @@ const useStyles = makeStyles({
         fontSize: '1.2em',
         lineHeight: '2.5',
         flex: 1,
-    },
+    }
 });
 
 let testJsonData = `
@@ -71,9 +70,7 @@ let testJsonData = `
 ]
 `;
 
-//<Divider className={classes.divider} />
-
-export default function Users(props) {
+export default function AdminList(props) {
     const classes = useStyles();
 
     let data = JSON.parse(testJsonData);
@@ -94,28 +91,13 @@ export default function Users(props) {
                 <SearchIcon />
               </IconButton>
             </Paper>
-            <Form />
+            <Divider className={classes.divider} />
             {
                 keys.map((index) => {
                     return (
-                        <Paper key={'userID_'+data[index].id} className={classes.items}>
-                            <Avatar
-                                alt="Remy Sharp"
-                                src="https://lh3.googleusercontent.com/a-/AAuE7mAmekuYgBj8w1wXk81CVdg1N1Tmq1EJdKR6YyiEXA=s96"
-                                className={classes.avatar} />
-                            <div className={classes.name}>
-                                {data[index].name}
-                            </div>
-                            <div className={classes.name}>
-                                {data[index].role}
-                            </div>
-                            <IconButton className={classes.iconButton} aria-label="Edit">
-                                <EditIcon />
-                            </IconButton>
-                            <IconButton className={classes.iconButton} aria-label="Delete">
-                                <DeleteIcon />
-                            </IconButton>
-                        </Paper>
+                        <div key={index}>
+                            {props.view}
+                        </div>
                     );
                 })
             }
