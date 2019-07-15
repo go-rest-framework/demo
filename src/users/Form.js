@@ -45,21 +45,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function Form() {
+export default function Form(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+
     const [values, setValues] = React.useState({
         role: '',
         name: 'hai',
     });
 
-    function handleClickOpen() {
-        setOpen(true);
-    }
-
-    function handleClose() {
-        setOpen(false);
-    }
 
     function handleChange(event) {
         setValues(oldValues => ({
@@ -71,21 +64,21 @@ export default function Form() {
     return (
         <div>
         <div className={classes.buttonsWrap}>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            <Button variant="outlined" color="primary" onClick={props.handleClickOpen}>
               <AddIcon />
               Add New User
             </Button>
         </div>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog fullScreen open={props.open} onClose={props.handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="Close">
+            <IconButton edge="start" color="inherit" onClick={props.handleClose} aria-label="Close">
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               Add New User
             </Typography>
-            <Button color="inherit" onClick={handleClose}>
+            <Button color="inherit" onClick={props.handleClose}>
               save
             </Button>
           </Toolbar>
