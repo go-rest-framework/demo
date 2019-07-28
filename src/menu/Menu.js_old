@@ -22,8 +22,6 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import Breadcrumbs from './Breadcrumbs.js';
-import Avatar from '@material-ui/core/Avatar';
 import {
     mainListItems,
     secondaryListItems
@@ -46,11 +44,6 @@ const useStyles = makeStyles(theme => ({
         //...theme.mixins.toolbar,
     },
     appBar: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        position: 'absolute',
-        width: `calc(100% - ${theme.spacing(9)}px)`,
-        marginLeft: theme.spacing(9),
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -66,13 +59,10 @@ const useStyles = makeStyles(theme => ({
         }),
     },
     menuButton: {
-        marginRight: 8,
+        marginRight: 36,
     },
     menuButtonHidden: {
         display: 'none',
-    },
-    menuButtonShow: {
-        display: 'block',
     },
     title: {
         flexGrow: 1,
@@ -81,7 +71,6 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
         whiteSpace: 'nowrap',
         width: drawerWidth,
-        height: '100vh',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -117,12 +106,6 @@ const useStyles = makeStyles(theme => ({
     fixedHeight: {
         height: 240,
     },
-    avatar: {
-        margin: '0 1em 0 0',
-    },
-    curusername: {
-        padding: '1em',
-    }
 }));
 
 
@@ -162,21 +145,27 @@ export default function Menu(app) {
 
     return (
         <div>
-        <div className={clsx(classes.appBar, open && classes.appBarShift)}>
-            <Breadcrumbs />
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <div className={classes.curusername}>
-                testuser@test.com
-            </div>
-            <Avatar
-                alt="Remy Sharp"
-                src="https://lh3.googleusercontent.com/a-/AAuE7mAmekuYgBj8w1wXk81CVdg1N1Tmq1EJdKR6YyiEXA=s96"
-                className={classes.avatar} />
-        </div>
+        <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+            <Toolbar className={classes.toolbar}>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="Open drawer"
+                onClick={handleDrawerOpen}
+                className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                Dashboard
+              </Typography>
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            </Toolbar>
+            </AppBar>
         <Drawer
           variant="permanent"
           classes={{
@@ -185,18 +174,8 @@ export default function Menu(app) {
           open={open}
         >
           <div className={classes.toolbarIcon}>
-            <IconButton
-              onClick={handleDrawerClose}
-              className={clsx(classes.menuButtonHidden, open && classes.menuButtonShow)}
-            >
+            <IconButton onClick={handleDrawerClose}>
               <ChevronLeftIcon />
-            </IconButton>
-            <IconButton
-              aria-label="Open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-            >
-              <MenuIcon />
             </IconButton>
           </div>
           <Divider />

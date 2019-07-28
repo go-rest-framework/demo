@@ -13,7 +13,7 @@ class App extends Component {
         super(props);
         this.state = {
             page: "layout",
-            content: "users"
+            content: "elements"
         };
     }
 
