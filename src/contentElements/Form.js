@@ -23,6 +23,7 @@ import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import MyEditor from '../components/editor/Editor.js';
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -63,116 +64,81 @@ export default function Form(props) {
 
     return (
         <div>
-        <div className={classes.buttonsWrap}>
-            <Button variant="outlined" color="primary" onClick={props.handleClickOpen}>
-              <AddIcon />
-              Add New Element
-            </Button>
+            <div className={classes.buttonsWrap}>
+                <Button variant="outlined" color="primary" onClick={props.handleClickOpen}>
+                    <AddIcon />
+                    Add New Element
+                </Button>
+            </div>
+            <Dialog fullScreen open={props.open} onClose={props.handleClose} TransitionComponent={Transition}>
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={props.handleClose} aria-label="Close">
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title}>
+                            Add New Element
+                        </Typography>
+                        <Button color="inherit" onClick={props.handleClose}>
+                            save
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <form className={classes.form} noValidate>
+                    <Grid container spacing={3}>
+                        <Grid item xs={6}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="repassword"
+                                label="Re Password"
+                                type="password"
+                                id="repassword"
+                            />
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="role-helper">Role</InputLabel>
+                                <Select
+                                    value={values.role}
+                                    onChange={handleChange}
+                                    input={<Input name="role" id="role-helper" />}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    <MenuItem value={10}>User</MenuItem>
+                                    <MenuItem value={20}>Admin</MenuItem>
+                                </Select>
+                                <FormHelperText>Some important helper text</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MyEditor />
+                        </Grid>
+                    </Grid>
+                </form>
+            </Dialog>
         </div>
-      <Dialog fullScreen open={props.open} onClose={props.handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={props.handleClose} aria-label="Close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              Add New Element
-            </Typography>
-            <Button color="inherit" onClick={props.handleClose}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <form className={classes.form} noValidate>
-            <Grid container spacing={3}>
-                <Grid item xs={6}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="repassword"
-                        label="Re Password"
-                        type="password"
-                        id="repassword"
-                    />
-                    <FormControl fullWidth>
-                        <InputLabel htmlFor="role-helper">Role</InputLabel>
-                        <Select
-                        value={values.role}
-                        onChange={handleChange}
-                        input={<Input name="role" id="role-helper" />}
-                        >
-                            <MenuItem value="">
-                            <em>None</em>
-                            </MenuItem>
-                            <MenuItem value={10}>User</MenuItem>
-                            <MenuItem value={20}>Admin</MenuItem>
-                        </Select>
-                        <FormHelperText>Some important helper text</FormHelperText>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="firstname"
-                        label="Firstname"
-                        id="firstname"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="middlename"
-                        label="Middlename"
-                        id="middlename"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="lastname"
-                        label="Lastname"
-                        id="lastname"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="phone"
-                        label="Phone"
-                        id="phone"
-                    />
-                </Grid>
-            </Grid>
-        </form>
-      </Dialog>
-    </div>
     );
 }
