@@ -30,17 +30,16 @@ const InlineStyleControls = (props) => {
 
     return (
         <div className="RichEditor-controls">
-            <ButtonGroup size="small" aria-label="small contained button group">
-                {INLINE_STYLES.map((type) =>
-                    <Button
-                        key={type.label}
-                        active={currentStyle.has(type.style) ? "true" : "false"}
-                        label={type.label}
-                        data-style={type.style}
-                        onClick={changeF}
-                    >{type.label}</Button>
-                )}
-            </ButtonGroup>
+            {INLINE_STYLES.map((type) =>
+                <Button
+                    size="small"
+                    key={type.label}
+                    active={currentStyle.has(type.style) ? "true" : "false"}
+                    label={type.label}
+                    data-style={type.style}
+                    onClick={changeF}
+                >{type.label}</Button>
+            )}
           </div>
     );
 };

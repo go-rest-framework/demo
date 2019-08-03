@@ -60,17 +60,16 @@ const BlockStyleControls = (props) => {
     }
     return (
         <div className="RichEditor-controls">
-            <ButtonGroup size="small" aria-label="small contained button group">
-                {BLOCK_TYPES.map((type) =>
-                    <Button
-                        key={type.label}
-                        active={(type.style === blockType) ? "true" : "false"}
-                        label={type.label}
-                        data-style={type.style}
-                        onClick={changeF}
-                    >{type.label}</Button>
-                )}
-            </ButtonGroup>
+            {BLOCK_TYPES.map((type) =>
+                <Button
+                    size="small"
+                    key={type.label}
+                    active={(type.style === blockType) ? "true" : "false"}
+                    label={type.label}
+                    data-style={type.style}
+                    onClick={changeF}
+                >{type.label}</Button>
+            )}
           </div>
     );
 };
