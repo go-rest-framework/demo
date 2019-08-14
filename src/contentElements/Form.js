@@ -24,6 +24,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MyEditor from '../components/editor/Editor.js';
+import ColorEditor from '../components/editor/demo/Color.js';
+import ConvertEditor from '../components/editor/demo/Convert.js';
+import EntityEditor from '../components/editor/demo/Entity.js';
+import LinkEditor from '../components/editor/demo/Link.js';
+import PlainTextEditor from '../components/editor/demo/PlainText.js';
+import RichEditor from '../components/editor/demo/Rich.js';
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -136,6 +142,12 @@ export default function Form(props) {
                         <Grid item xs={6}>
                             <MyEditor />
                         </Grid>
+                        <ColorEditor />
+                        <ConvertEditor />
+                        <EntityEditor />
+                        <LinkEditor />
+                        <PlainTextEditor />
+                        <RichEditor />
                     </Grid>
                 </form>
             </Dialog>

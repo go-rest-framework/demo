@@ -197,18 +197,27 @@ export default class MyEditor extends React.Component {
                     onToggle={this.toggleInlineStyle}
                 />
                 <div>
-                    <Button onMouseDown={this.addAudio} style={{marginRight: 10}}>
+                    <Button
+                        size="small"
+                        onMouseDown={this.addAudio}
+                    >
                         Add Audio
                     </Button>
-                    <Button onMouseDown={this.addImage} style={{marginRight: 10}}>
+                    <Button
+                        size="small"
+                        onMouseDown={this.addImage}
+                    >
                         Add Image
                     </Button>
-                    <Button onMouseDown={this.addVideo} style={{marginRight: 10}}>
+                    <Button
+                        size="small"
+                        onMouseDown={this.addVideo}
+                    >
                         Add Video
                     </Button>
                 </div>
                 {urlInput}
-                <div className={className} onClick={this.focus}>
+                <div style={styles.maininput} onClick={this.focus}>
                     <Editor
                         blockRendererFn={mediaBlockRenderer}
                         blockStyleFn={getBlockStyle}
@@ -217,7 +226,6 @@ export default class MyEditor extends React.Component {
                         handleKeyCommand={this.handleKeyCommand}
                         keyBindingFn={this.mapKeyToEditorCommand}
                         onChange={this.onChange}
-                        placeholder="Tell a story..."
                         ref="editor"
                         spellCheck={true}
                     />
@@ -290,6 +298,11 @@ function getBlockStyle(block) {
 }
 
 const styles = {
+    maininput: {
+        border: '1px solid grey',
+        margin: '1em 0em',
+        minHeight: '20em',
+    },
     root: {
         fontFamily: '\'Georgia\', serif',
         padding: 20,

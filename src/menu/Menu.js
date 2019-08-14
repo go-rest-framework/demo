@@ -159,7 +159,6 @@ export default function Menu(app) {
         });
     }
 
-
     return (
         <div>
         <div className={clsx(classes.appBar, open && classes.appBarShift)}>
