@@ -18,6 +18,18 @@ var INLINE_STYLES = [{
         label: 'Monospace',
         style: 'CODE'
     },
+    {
+        label: 'Left',
+        style: 'LEFT'
+    },
+    {
+        label: 'Center',
+        style: 'CENTER'
+    },
+    {
+        label: 'Right',
+        style: 'RIGHT'
+    },
 ];
 
 const InlineStyleControls = (props) => {

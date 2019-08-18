@@ -42,6 +42,7 @@ export default class HTMLConvertExample extends React.Component {
         });
         this.logState = () => {
             const content = this.state.editorState.getCurrentContent();
+            console.log(content);
             console.log(convertToRaw(content));
         };
     }

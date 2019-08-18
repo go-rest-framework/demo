@@ -17,6 +17,7 @@ import {
 import BlockStyleControls from './BlockSC.js';
 import InlineStyleControls from './InlineSC.js';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,13 +35,13 @@ export default class MyEditor extends React.Component {
             urlType: '',
         };
         this.focus = () => this.refs.editor.focus();
-        this.onChange = (editorState) => this.setState({
-            editorState
-        });
-        this.logState = () => {
+        this.onChange = (editorState) => {
+            this.setState({
+                editorState
+            });
             const content = this.state.editorState.getCurrentContent();
-            console.log(content);
-        };
+            console.log(convertToRaw(content));
+        }
         this.onURLChange = (e) => this.setState({
             urlValue: e.target.value
         });
@@ -188,34 +189,36 @@ export default class MyEditor extends React.Component {
         }
         return (
             <div className="RichEditor-root">
-                <BlockStyleControls
-                    editorState={editorState}
-                    onToggle={this.toggleBlockType}
-                />
-                <InlineStyleControls
-                    editorState={editorState}
-                    onToggle={this.toggleInlineStyle}
-                />
-                <div>
-                    <Button
-                        size="small"
-                        onMouseDown={this.addAudio}
-                    >
-                        Add Audio
-                    </Button>
-                    <Button
-                        size="small"
-                        onMouseDown={this.addImage}
-                    >
-                        Add Image
-                    </Button>
-                    <Button
-                        size="small"
-                        onMouseDown={this.addVideo}
-                    >
-                        Add Video
-                    </Button>
-                </div>
+                <Paper>
+                    <BlockStyleControls
+                        editorState={editorState}
+                        onToggle={this.toggleBlockType}
+                    />
+                    <InlineStyleControls
+                        editorState={editorState}
+                        onToggle={this.toggleInlineStyle}
+                    />
+                    <div>
+                        <Button
+                            size="small"
+                            onMouseDown={this.addAudio}
+                        >
+                            Add Audio
+                        </Button>
+                        <Button
+                            size="small"
+                            onMouseDown={this.addImage}
+                        >
+                            Add Image
+                        </Button>
+                        <Button
+                            size="small"
+                            onMouseDown={this.addVideo}
+                        >
+                            Add Video
+                        </Button>
+                    </div>
+                </Paper>
                 {urlInput}
                 <div style={styles.maininput} onClick={this.focus}>
                     <Editor
@@ -226,15 +229,11 @@ export default class MyEditor extends React.Component {
                         handleKeyCommand={this.handleKeyCommand}
                         keyBindingFn={this.mapKeyToEditorCommand}
                         onChange={this.onChange}
+                        onKeyUp={this.onKeyUp}
                         ref="editor"
                         spellCheck={true}
                     />
                 </div>
-                <input
-                    onClick={this.logState}
-                    type="button"
-                    value="Log State"
-                />
             </div>
         );
     }
@@ -286,6 +285,18 @@ const styleMap = {
         fontSize: 16,
         padding: 2,
     },
+    LEFT: {
+        textAlign: 'left',
+        display: 'block',
+    },
+    CENTER: {
+        textAlign: 'center',
+        display: 'block',
+    },
+    RIGHT: {
+        textAlign: 'right',
+        display: 'block',
+    },
 };
 
 function getBlockStyle(block) {
@@ -299,7 +310,9 @@ function getBlockStyle(block) {
 
 const styles = {
     maininput: {
-        border: '1px solid grey',
+        border: '1px solid #c7c7c7',
+        borderRadius: '5px',
+        padding: '1em',
         margin: '1em 0em',
         minHeight: '20em',
     },

@@ -56,7 +56,7 @@ export default function Form(props) {
     const classes = useStyles();
 
     const [values, setValues] = React.useState({
-        role: '',
+        status: '',
         name: 'hai',
     });
 
@@ -98,43 +98,31 @@ export default function Form(props) {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
+                                id="title"
+                                label="Title"
+                                name="title"
                             />
                             <TextField
                                 variant="outlined"
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="repassword"
-                                label="Re Password"
-                                type="password"
-                                id="repassword"
+                                name="urld"
+                                label="Urld"
+                                id="urld"
                             />
                             <FormControl fullWidth>
-                                <InputLabel htmlFor="role-helper">Role</InputLabel>
+                                <InputLabel htmlFor="status-helper">Status</InputLabel>
                                 <Select
-                                    value={values.role}
+                                    value={values.status}
                                     onChange={handleChange}
-                                    input={<Input name="role" id="role-helper" />}
+                                    input={<Input name="status" id="status-helper" />}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    <MenuItem value={10}>User</MenuItem>
-                                    <MenuItem value={20}>Admin</MenuItem>
+                                    <MenuItem value={10}>Draft</MenuItem>
+                                    <MenuItem value={20}>Public</MenuItem>
                                 </Select>
                                 <FormHelperText>Some important helper text</FormHelperText>
                             </FormControl>
@@ -142,12 +130,6 @@ export default function Form(props) {
                         <Grid item xs={6}>
                             <MyEditor />
                         </Grid>
-                        <ColorEditor />
-                        <ConvertEditor />
-                        <EntityEditor />
-                        <LinkEditor />
-                        <PlainTextEditor />
-                        <RichEditor />
                     </Grid>
                 </form>
             </Dialog>
