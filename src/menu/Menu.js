@@ -24,6 +24,8 @@ import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import Breadcrumbs from './Breadcrumbs.js';
 import Avatar from '@material-ui/core/Avatar';
+import UMenu from '@material-ui/core/Menu';
+import UMenuItem from '@material-ui/core/MenuItem';
 import {
     mainListItems,
     secondaryListItems
@@ -119,6 +121,7 @@ const useStyles = makeStyles(theme => ({
     },
     avatar: {
         margin: '0 1em 0 0',
+        cursor: 'pointer',
     },
     curusername: {
         padding: '1em',
@@ -130,13 +133,24 @@ export default function Menu(app) {
     console.log(app);
     const classes = useStyles();
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
     const [open, setOpen] = React.useState(true);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    function handleClick(event) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleClose() {
+        setAnchorEl(null);
+    }
 
     function switchToUsers(e) {
         e.preventDefault();
@@ -172,9 +186,21 @@ export default function Menu(app) {
                 testuser@test.com
             </div>
             <Avatar
+                onClick={handleClick}
                 alt="Remy Sharp"
                 src="https://lh3.googleusercontent.com/a-/AAuE7mAmekuYgBj8w1wXk81CVdg1N1Tmq1EJdKR6YyiEXA=s96"
                 className={classes.avatar} />
+            <UMenu
+                id="user-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                <UMenuItem onClick={handleClose}>Profile</UMenuItem>
+                <UMenuItem onClick={handleClose}>My account</UMenuItem>
+                <UMenuItem onClick={handleClose}>Logout</UMenuItem>
+            </UMenu>
         </div>
         <Drawer
           variant="permanent"

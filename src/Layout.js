@@ -79,18 +79,18 @@ export default function Layout(app) {
 
     return (
         <div className={classes.root}>
-      <CssBaseline />
-      <Menu el={app} />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-            {
-                app.el.state.content == "dashboard" && <Dashboard />
-                || app.el.state.content == "users" && <Users />
-                || app.el.state.content == "elements" && <ContentElements />
-            }
-        </Container>
-      </main>
-    </div>
+            <CssBaseline />
+            <Menu el={app} />
+            <main className={classes.content}>
+                <div className={classes.appBarSpacer} />
+                <Container maxWidth="lg" className={classes.container}>
+                    {
+                        app.el.state.content == "dashboard" && <Dashboard />
+                        || app.el.state.content == "users" && <Users />
+                        || app.el.state.content == "elements" && <ContentElements />
+                    }
+                </Container>
+            </main>
+        </div>
     );
 }

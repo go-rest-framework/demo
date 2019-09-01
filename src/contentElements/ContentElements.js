@@ -15,6 +15,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Form from './Form.js';
 import AlertDialogSlide from './AlertDialogSlide.js';
+import UMenu from '@material-ui/core/Menu';
+import UMenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles({
     root: {
@@ -70,7 +72,46 @@ let testJsonData = `
         "kind": 1,
         "status": 1,
         "tags": "news",
-        "elements": null,
+        "elements": [
+            {
+                "ID": 3,
+                "CreatedAt": "2019-07-24T01:26:27Z",
+                "UpdatedAt": "2019-07-24T01:26:27Z",
+                "DeletedAt": null,
+                "urld": "quia",
+                "userID": 1,
+                "parent": 1,
+                "title": "FFDDDDKKFFFF FFFKDDDKDDSSSSS",
+                "description": "in qui veritatis veniam mollitia laudantium amet. quia sed enim. sed natus quidem assumenda labore. voluptate qui molestiae quia vel vel rem minima. voluptatem voluptatum ut voluptatem quos et quam. dolore voluptas voluptas. omnis deleniti est perspiciatis veniam soluta voluptatem eius.",
+                "content": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                "meta_title": "SEQUI UT",
+                "meta_descr": "libero voluptate deleniti dignissimos et explicabo magni. autem consequatur porro. repellendus officia et. sed enim non error placeat quod natus. et vero quia. assumenda et commodi. tempore excepturi quibusdam laborum. quis deleniti quidem deserunt et quaerat cupiditate aut. qui vel sed voluptatem.",
+                "kind": 1,
+                "status": 1,
+                "tags": "news,test",
+                "elements": null,
+                "comments": null
+            },
+            {
+                "ID": 4,
+                "CreatedAt": "2019-07-24T01:26:27Z",
+                "UpdatedAt": "2019-07-24T01:26:27Z",
+                "DeletedAt": null,
+                "urld": "quia",
+                "userID": 1,
+                "parent": 1,
+                "title": "KKKKLSSLSSKKKK IISII IIIII",
+                "description": "in qui veritatis veniam mollitia laudantium amet. quia sed enim. sed natus quidem assumenda labore. voluptate qui molestiae quia vel vel rem minima. voluptatem voluptatum ut voluptatem quos et quam. dolore voluptas voluptas. omnis deleniti est perspiciatis veniam soluta voluptatem eius.",
+                "content": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                "meta_title": "SEQUI UT",
+                "meta_descr": "libero voluptate deleniti dignissimos et explicabo magni. autem consequatur porro. repellendus officia et. sed enim non error placeat quod natus. et vero quia. assumenda et commodi. tempore excepturi quibusdam laborum. quis deleniti quidem deserunt et quaerat cupiditate aut. qui vel sed voluptatem.",
+                "kind": 1,
+                "status": 1,
+                "tags": "news,test",
+                "elements": null,
+                "comments": null
+            }
+        ],
         "comments": null
     },
     {
@@ -98,10 +139,61 @@ let testJsonData = `
 
 //<Divider className={classes.divider} />
 
+function Item(props) {
+    const classes = useStyles();
+    let data = props.data;
+    let index = props.index;
+    let keys = [];
+    let elements = null;
+    if (data[index] != undefined && data[index].elements != null && data[index].elements.length > 0) {
+        keys = Object.keys(data[index].elements);
+        elements = data[index].elements;
+    }
+    return (
+        <div>
+            <Paper className={classes.items} style={{marginLeft:props.lvl+'em'}}>
+                <div className={classes.name}>
+                    {data[index].title}
+                </div>
+                <div className={classes.name}>
+                    {data[index].urld}
+                </div>
+                <div>
+                    {data[index].kind}
+                </div>
+                <div>
+                    {data[index].status}
+                </div>
+                <IconButton className={classes.iconButton} aria-label="Edit" onClick={props.handleClickOpen}>
+                    <EditIcon />
+                </IconButton>
+                <IconButton className={classes.iconButton} aria-label="Delete" onClick={props.handleDeleteAsk}>
+                    <DeleteIcon />
+                </IconButton>
+            </Paper>
+            {
+                keys.map((index) => {
+                    return (
+                        <Item
+                            data={elements}
+                            index={index}
+                            key={'elementID_'+elements[index].ID}
+                            handleClickOpen={props.handleClickOpen}
+                            handleDeleteAsk={props.handleDeleteAsk}
+                            lvl={props.lvl+1}
+                        />
+                    );
+                })
+            }
+        </div>
+    );
+}
+
 export default function ContentElements(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     const [deleteopen, setDeleteOpen] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     let data = JSON.parse(testJsonData);
     data = data.data
@@ -128,14 +220,37 @@ export default function ContentElements(props) {
         alert('send request for delete element');
     }
 
+    function handleSMClick(event) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleSMClose() {
+        setAnchorEl(null);
+    }
+
 
     return (
         <div>
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
-              <IconButton className={classes.iconButton} aria-label="Menu">
+              <IconButton
+                  className={classes.iconButton}
+                  aria-label="Menu"
+                  onClick={handleSMClick}
+              >
                 <MenuIcon />
               </IconButton>
+              <UMenu
+                  id="user-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleSMClose}
+              >
+                  <UMenuItem onClick={handleSMClose}>Menu1</UMenuItem>
+                  <UMenuItem onClick={handleSMClose}>Menu2</UMenuItem>
+                  <UMenuItem onClick={handleSMClose}>Menu3</UMenuItem>
+              </UMenu>
               <InputBase
                 className={classes.input}
                 placeholder="Start type for search..."
@@ -149,26 +264,14 @@ export default function ContentElements(props) {
             {
                 keys.map((index) => {
                     return (
-                        <Paper key={'userID_'+data[index].ID} className={classes.items}>
-                            <div className={classes.name}>
-                                {data[index].title}
-                            </div>
-                            <div className={classes.name}>
-                                {data[index].urld}
-                            </div>
-                            <div>
-                                {data[index].kind}
-                            </div>
-                            <div>
-                                {data[index].status}
-                            </div>
-                            <IconButton className={classes.iconButton} aria-label="Edit" onClick={handleClickOpen}>
-                                <EditIcon />
-                            </IconButton>
-                            <IconButton className={classes.iconButton} aria-label="Delete" onClick={handleDeleteAsk}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Paper>
+                        <Item
+                            data={data}
+                            index={index}
+                            key={'elementID_'+data[index].ID}
+                            handleClickOpen={handleClickOpen}
+                            handleDeleteAsk={handleDeleteAsk}
+                            lvl={0}
+                        />
                     );
                 })
             }
