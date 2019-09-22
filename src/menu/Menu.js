@@ -23,6 +23,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import Breadcrumbs from './Breadcrumbs.js';
+import Notifications from './Notifications.js';
 import Avatar from '@material-ui/core/Avatar';
 import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
@@ -177,11 +178,7 @@ export default function Menu(app) {
         <div>
         <div className={clsx(classes.appBar, open && classes.appBarShift)}>
             <Breadcrumbs />
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <Notifications />
             <div className={classes.curusername}>
                 testuser@test.com
             </div>
