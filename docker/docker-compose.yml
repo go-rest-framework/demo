@@ -1,0 +1,57 @@
+# Последняя версия docker-compose
+version: '3'
+
+# Создаем общую сеть deafult для всех контейнеров
+networks:
+  golangdevnet:
+    driver: bridge
+
+# Создаем отдельные контейнеры
+services:
+  web:
+    image: nginx
+    volumes:
+      - ../dist/:/usr/share/nginx/html
+      - ./conf/nginx/site.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - golangdevnet
+    ports:
+      - "80:80"
+    command: [nginx, '-g', 'daemon off;']
+    depends_on:
+      - db
+      - golang
+  # Контейнер с веб-приложением
+  golang:
+    image: golang:1.13
+    ports:
+      - "1888:1888"
+    # Подключаем к общей сети с другими контейнерами
+    networks:
+      - golangdevnet
+    # Запускаем только после db
+    depends_on:
+      - db
+      #- redis
+    # Линкуем внешнюю папку с исходниками внутрь
+    volumes:
+      - "../:/go/src/app"
+    command: "./src/app/gorestdev test"
+  db:
+    image: mysql:5.7
+    # Подключаем к общей сети с другими контейнерами
+    networks:
+      - golangdevnet
+    # Показываем наружу порт
+    ports:
+      - "3336:3306"
+    # Задаем параметры для инициализации БД
+    environment:
+      # Пароль к БД
+      MYSQL_ROOT_PASSWORD: rootpass
+      # Создаваемая по умолчанию бд
+      MYSQL_DATABASE: goresttest
+    # Линкуем внешнюю папку для хранения БД
+    volumes:
+      - "./database:/var/lib/mysql"
+      - "./conf/mysql:/etc/mysql/conf.d"

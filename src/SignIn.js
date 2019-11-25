@@ -64,6 +64,28 @@ export default function SignIn(parent) {
         });
     }
 
+    function handleSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(event.target);
+
+        fetch('http://localhost/api/users/login', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            //credentials: "same-origin"
+        }).then(function(response) {
+            response.status //=> number 100–599
+            response.statusText //=> String
+            response.headers //=> Headers
+            response.url //=> String
+            console.log(response.text());
+        }, function(error) {
+            error.message //=> String
+        });
+    }
+
     return (
         <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -74,7 +96,7 @@ export default function SignIn(parent) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -106,7 +128,7 @@ export default function SignIn(parent) {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={switchToDashboard}
+            //onClick={switchToDashboard}
             className={classes.submit}
           >
             Sign In
