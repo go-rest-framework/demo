@@ -43,6 +43,12 @@ const useStyles = makeStyles(theme => ({
 export default function SignIn(parent) {
     const classes = useStyles();
 
+    const [erroremail, setErrEmail] = React.useState(false);
+    const [errorpass, setErrPass] = React.useState(false);
+
+    const [erroremailmsg, setErrEmailMsg] = React.useState(null);
+    const [errorpassmsg, setErrPassMsg] = React.useState(null);
+
     function switchToSignUp(e) {
         e.preventDefault();
         parent.el.setState({
@@ -66,23 +72,47 @@ export default function SignIn(parent) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        const data = new FormData(event.target);
+        const data = new FormData(e.target);
+        let a = {};
+
+        for (var pair of data.entries()) {
+            a[pair[0]] = pair[1];
+        }
 
         fetch('http://localhost/api/users/login', {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify(a),
             headers: {
                 "Content-Type": "application/json"
             },
-            //credentials: "same-origin"
+            credentials: "same-origin"
         }).then(function(response) {
-            response.status //=> number 100–599
-            response.statusText //=> String
-            response.headers //=> Headers
-            response.url //=> String
-            console.log(response.text());
+            response.json().then(function(res) {
+                if (res.errors === null) {
+                    console.log(res.data);
+                    parent.el.setState({
+                        page: "layout",
+                    });
+                    sessionStorage.setItem('userid', res.data.ID);
+                    sessionStorage.setItem('useremail', res.data.email);
+                    sessionStorage.setItem('userrole', res.data.role);
+                    sessionStorage.setItem('usertoken', res.data.token);
+                } else {
+                    for (var one of res.errors) {
+                        console.log(one);
+                        if (one.item == 'email') {
+                            setErrEmail(true)
+                            setErrEmailMsg(one.msg)
+                        }
+                        if (one.item == 'password') {
+                            setErrPass(true)
+                            setErrPassMsg(one.msg)
+                        }
+                    }
+                }
+            });
         }, function(error) {
-            error.message //=> String
+            alert(error.message); //=> String
         });
     }
 
@@ -98,6 +128,7 @@ export default function SignIn(parent) {
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
+            error={erroremail}
             variant="outlined"
             margin="normal"
             required
@@ -107,8 +138,10 @@ export default function SignIn(parent) {
             name="email"
             autoComplete="email"
             autoFocus
+            helperText={erroremailmsg}
           />
           <TextField
+            error={errorpass}
             variant="outlined"
             margin="normal"
             required
@@ -118,9 +151,10 @@ export default function SignIn(parent) {
             type="password"
             id="password"
             autoComplete="current-password"
+            helperText={errorpassmsg}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value="1" name="rememberme" color="primary" />}
             label="Remember me"
           />
           <Button

@@ -153,6 +153,12 @@ export default function Menu(app) {
         setAnchorEl(null);
     }
 
+    function handleLogout(e) {
+        e.preventDefault();
+        sessionStorage.clear();
+        location.reload();
+    }
+
     function switchToUsers(e) {
         e.preventDefault();
         app.el.el.setState({
@@ -196,7 +202,7 @@ export default function Menu(app) {
             >
                 <UMenuItem onClick={handleClose}>Profile</UMenuItem>
                 <UMenuItem onClick={handleClose}>My account</UMenuItem>
-                <UMenuItem onClick={handleClose}>Logout</UMenuItem>
+                <UMenuItem onClick={handleLogout}>Logout</UMenuItem>
             </UMenu>
         </div>
         <Drawer

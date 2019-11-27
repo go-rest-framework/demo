@@ -74,20 +74,20 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Layout(app) {
+export default function Layout(props) {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <Menu el={app} />
+            <Menu el={props} />
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
                     {
-                        app.el.state.content == "dashboard" && <Dashboard />
-                        || app.el.state.content == "users" && <Users />
-                        || app.el.state.content == "elements" && <ContentElements />
+                        props.el.state.content == "dashboard" && <Dashboard />
+                        || props.el.state.content == "users" && <Users app={props.el} />
+                        || props.el.state.content == "elements" && <ContentElements />
                     }
                 </Container>
             </main>

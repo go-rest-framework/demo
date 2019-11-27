@@ -11,9 +11,22 @@ import './App.css';
 class App extends Component {
     constructor(props) {
         super(props);
+        var checkdata = {};
+        var page = "signin";
+        //TODO add tocken check
+        if (sessionStorage.usertoken != undefined) {
+            var checkdata = {
+                id: sessionStorage.userid,
+                token: sessionStorage.usertoken,
+                email: sessionStorage.useremail,
+                role: sessionStorage.userrole,
+            }
+            page = "layout";
+        }
         this.state = {
-            page: "signin",
-            content: "elements"
+            page: page,
+            content: "users",
+            userdata: checkdata
         };
     }
 

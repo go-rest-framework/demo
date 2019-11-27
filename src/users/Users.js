@@ -108,10 +108,35 @@ export default function Users(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [deleteopen, setDeleteOpen] = React.useState(false);
+    const [data, setData] = React.useState({});
+    const [datachange, setDataChange] = React.useState(0);
 
-    let data = JSON.parse(testJsonData);
-    data = data.data
-    let keys = Object.keys(data);
+    React.useEffect(() => {
+        fetch('http://localhost/api/users', {
+            method: "GET",
+            //body: JSON.stringify(a),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + props.app.state.userdata.token
+            },
+            credentials: "same-origin"
+        }).then(function(response) {
+            response.json().then(function(res) {
+                if (res.errors != null) {
+                    console.log(res.errors);
+                } else {
+                    console.log(res.data);
+                    setData(res.data);
+                }
+            });
+        }, function(error) {
+            alert(error.message); //=> String
+        });
+    }, [datachange]);
+
+    /*setTimeout(function() {
+        setDataChange(datachange + 1);
+    }, 5000);*/
 
     function handleClickOpen() {
         setOpen(true);
@@ -153,7 +178,7 @@ export default function Users(props) {
             </Paper>
             <Form open={open} handleClickOpen={handleClickOpen} handleClose={handleClose}/>
             {
-                keys.map((index) => {
+                Object.keys(data).map((index) => {
                     return (
                         <Paper key={'userID_'+data[index].ID} className={classes.items}>
                             <Avatar
