@@ -90,13 +90,21 @@ export default function SignIn(parent) {
             response.json().then(function(res) {
                 if (res.errors === null) {
                     console.log(res.data);
-                    parent.el.setState({
-                        page: "layout",
-                    });
                     sessionStorage.setItem('userid', res.data.ID);
                     sessionStorage.setItem('useremail', res.data.email);
                     sessionStorage.setItem('userrole', res.data.role);
                     sessionStorage.setItem('usertoken', res.data.token);
+                    parent.el.setState({
+                        userdata: {
+                            id: sessionStorage.userid,
+                            token: sessionStorage.usertoken,
+                            email: sessionStorage.useremail,
+                            role: sessionStorage.userrole,
+                        },
+                    });
+                    parent.el.setState({
+                        page: "layout",
+                    });
                 } else {
                     for (var one of res.errors) {
                         console.log(one);

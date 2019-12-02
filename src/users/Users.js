@@ -106,10 +106,12 @@ let testJsonData = `
 
 export default function Users(props) {
     const classes = useStyles();
+    const [editID, setEditID] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [deleteopen, setDeleteOpen] = React.useState(false);
     const [data, setData] = React.useState({});
     const [datachange, setDataChange] = React.useState(0);
+    const [deleteitem, setDeleteItem] = React.useState(0);
 
     React.useEffect(() => {
         fetch('http://localhost/api/users', {
@@ -121,14 +123,21 @@ export default function Users(props) {
             },
             credentials: "same-origin"
         }).then(function(response) {
-            response.json().then(function(res) {
-                if (res.errors != null) {
-                    console.log(res.errors);
-                } else {
-                    console.log(res.data);
-                    setData(res.data);
-                }
-            });
+            if (response.status === 200) {
+                response.json().then(function(res) {
+                    if (res.errors != null) {
+                        console.log(res.errors);
+                    } else {
+                        console.log(res.data);
+                        setData(res.data);
+                    }
+                });
+            } else if (response.status === 401) {
+                sessionStorage.clear();
+                location.reload();
+            } else {
+                alert(response.text());
+            }
         }, function(error) {
             alert(error.message); //=> String
         });
@@ -138,25 +147,58 @@ export default function Users(props) {
         setDataChange(datachange + 1);
     }, 5000);*/
 
-    function handleClickOpen() {
+    function handleClickEdit(id) {
+        console.log(id);
+        setOpen(true);
+    }
+
+    function handleClickCreate() {
         setOpen(true);
     }
 
     function handleClose() {
         setOpen(false);
+        setDataChange(datachange + 1);
     }
 
-    function handleDeleteAsk() {
+    function handleDeleteAsk(id) {
         setDeleteOpen(true);
+        setDeleteItem(id);
     }
 
     function handleDeleteAbort() {
         setDeleteOpen(false);
+        setDeleteItem(0);
     }
 
     function handleDelete() {
-        setDeleteOpen(false);
-        alert('send request for delete element');
+        fetch('http://localhost/api/users/' + deleteitem, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + props.app.state.userdata.token
+            },
+            credentials: "same-origin"
+        }).then(function(response) {
+            if (response.status === 200) {
+                response.json().then(function(res) {
+                    if (res.errors != null) {
+                        console.log(res.errors);
+                    } else {
+                        setDeleteItem(0);
+                        setDeleteOpen(false);
+                        setDataChange(datachange + 1);
+                    }
+                });
+            } else if (response.status === 401) {
+                sessionStorage.clear();
+                location.reload();
+            } else {
+                alert(response.text());
+            }
+        }, function(error) {
+            alert(error.message); //=> String
+        });
     }
 
 
@@ -176,7 +218,11 @@ export default function Users(props) {
                 <SearchIcon />
               </IconButton>
             </Paper>
-            <Form open={open} handleClickOpen={handleClickOpen} handleClose={handleClose}/>
+            <Form
+                app={props.app}
+                open={open}
+                handleClickCreate={handleClickCreate}
+                handleClose={handleClose}/>
             {
                 Object.keys(data).map((index) => {
                     return (
@@ -191,10 +237,10 @@ export default function Users(props) {
                             <div className={classes.name}>
                                 {data[index].role}
                             </div>
-                            <IconButton className={classes.iconButton} aria-label="Edit" onClick={handleClickOpen}>
+                            <IconButton className={classes.iconButton} aria-label="Edit" onClick={handleClickEdit.bind(this,data[index].ID)}>
                                 <EditIcon />
                             </IconButton>
-                            <IconButton className={classes.iconButton} aria-label="Delete" onClick={handleDeleteAsk}>
+                            <IconButton className={classes.iconButton} aria-label="Delete" onClick={handleDeleteAsk.bind(this, data[index].ID)}>
                                 <DeleteIcon />
                             </IconButton>
                         </Paper>
