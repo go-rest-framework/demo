@@ -23,6 +23,7 @@ import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Avatar from './Avatar.js';
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -147,6 +148,18 @@ export default function Form(props) {
         <form className={classes.form} noValidate>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
+                    <Avatar />
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Multiline"
+                      multiline
+                      rows="4"
+                      defaultValue="Default Value"
+                      margin="normal"
+                      variant="outlined"
+                    />
+                </Grid>
+                <Grid item xs={6}>
                     <TextField
                         value={formdata.email}
                         onChange={handleChange}
@@ -206,8 +219,6 @@ export default function Form(props) {
                         </Select>
                         <FormHelperText>Some important helper text</FormHelperText>
                     </FormControl>
-                </Grid>
-                <Grid item xs={6}>
                     <TextField
                         value={formdata.firstname}
                         onChange={handleChange}
@@ -215,7 +226,6 @@ export default function Form(props) {
                         helperText={formdataerrs.firstname}
                         variant="outlined"
                         margin="normal"
-                        required
                         fullWidth
                         name="firstname"
                         label="Firstname"
@@ -228,7 +238,6 @@ export default function Form(props) {
                         helperText={formdataerrs.middlename}
                         variant="outlined"
                         margin="normal"
-                        required
                         fullWidth
                         name="middlename"
                         label="Middlename"
@@ -241,7 +250,6 @@ export default function Form(props) {
                         helperText={formdataerrs.lastname}
                         variant="outlined"
                         margin="normal"
-                        required
                         fullWidth
                         name="lastname"
                         label="Lastname"
@@ -254,7 +262,6 @@ export default function Form(props) {
                         helperText={formdataerrs.phone}
                         variant="outlined"
                         margin="normal"
-                        required
                         fullWidth
                         name="phone"
                         label="Phone"

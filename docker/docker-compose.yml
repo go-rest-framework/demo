@@ -19,8 +19,8 @@ services:
       - "80:80"
     command: [nginx, '-g', 'daemon off;']
     depends_on:
-      - db
       - golang
+      - db
   # Контейнер с веб-приложением
   golang:
     image: golang:1.13
