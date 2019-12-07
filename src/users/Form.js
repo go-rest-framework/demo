@@ -58,6 +58,7 @@ export default function Form(props) {
         middlename: '',
         lastname: '',
         phone: '',
+        avatar: '',
     });
 
     const [formdataerrs, setFormdataerrs] = React.useState({
@@ -69,14 +70,22 @@ export default function Form(props) {
         middlename: '',
         lastname: '',
         phone: '',
+        avatar: '',
     });
 
-    function handleChange(event) {
-        event.persist();
-        const value = event.target.value;
+    function handleChange(e) {
+        e.persist();
+        const value = e.target.value;
         setFormdata(oldValues => ({
             ...oldValues,
-            [event.target.name]: value,
+            [e.target.name]: value,
+        }));
+    }
+
+    function changeAva(val) {
+        setFormdata(oldValues => ({
+            ...oldValues,
+            ['avatar']: val,
         }));
     }
 
@@ -123,6 +132,33 @@ export default function Form(props) {
         });
     }
 
+    function handleClose(e) {
+        props.handleClose(e);
+
+        setFormdata({
+            email: '',
+            password: '',
+            repassword: '',
+            role: '',
+            firstname: '',
+            middlename: '',
+            lastname: '',
+            phone: '',
+            avatar: '',
+        });
+        setFormdataerrs({
+            email: '',
+            password: '',
+            repassword: '',
+            role: '',
+            firstname: '',
+            middlename: '',
+            lastname: '',
+            phone: '',
+            avatar: '',
+        });
+    }
+
     return (
         <div>
         <div className={classes.buttonsWrap}>
@@ -131,10 +167,10 @@ export default function Form(props) {
               Add New User
             </Button>
         </div>
-      <Dialog fullScreen open={props.open} onClose={props.handleClose} TransitionComponent={Transition}>
+      <Dialog fullScreen open={props.open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={props.handleClose} aria-label="Close">
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="Close">
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
@@ -147,19 +183,7 @@ export default function Form(props) {
         </AppBar>
         <form className={classes.form} noValidate>
             <Grid container spacing={3}>
-                <Grid item xs={6}>
-                    <Avatar />
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Multiline"
-                      multiline
-                      rows="4"
-                      defaultValue="Default Value"
-                      margin="normal"
-                      variant="outlined"
-                    />
-                </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={8}>
                     <TextField
                         value={formdata.email}
                         onChange={handleChange}
@@ -203,12 +227,14 @@ export default function Form(props) {
                         id="repassword"
                     />
                     <FormControl fullWidth>
-                        <InputLabel htmlFor="role-helper">Role</InputLabel>
+                        <InputLabel
+                            htmlFor="role-helper"
+                            helperText={formdataerrs.role}
+                        >Role</InputLabel>
                         <Select
                             value={formdata.role}
                             onChange={handleChange}
                             error={(formdataerrs.role == '') ? false : true}
-                            helperText={formdataerrs.role}
                             input={<Input name="role" id="role-helper" />}
                         >
                             <MenuItem value="">
@@ -219,6 +245,21 @@ export default function Form(props) {
                         </Select>
                         <FormHelperText>Some important helper text</FormHelperText>
                     </FormControl>
+                    <TextField
+                        value={formdata.phone}
+                        onChange={handleChange}
+                        error={(formdataerrs.phone == '') ? false : true}
+                        helperText={formdataerrs.phone}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        name="phone"
+                        label="Phone"
+                        id="phone"
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <Avatar changeAva={changeAva} />
                     <TextField
                         value={formdata.firstname}
                         onChange={handleChange}
@@ -254,18 +295,6 @@ export default function Form(props) {
                         name="lastname"
                         label="Lastname"
                         id="lastname"
-                    />
-                    <TextField
-                        value={formdata.phone}
-                        onChange={handleChange}
-                        error={(formdataerrs.phone == '') ? false : true}
-                        helperText={formdataerrs.phone}
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        name="phone"
-                        label="Phone"
-                        id="phone"
                     />
                 </Grid>
             </Grid>

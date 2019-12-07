@@ -20,12 +20,16 @@ class App extends React.Component {
         this.setState({
             preview: null
         })
+
+        this.props.changeAva("");
     }
 
     onCrop(preview) {
         this.setState({
             preview
-        })
+        });
+
+        this.props.changeAva(preview);
 
         console.log(preview);
     }
