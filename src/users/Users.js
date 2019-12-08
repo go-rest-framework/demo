@@ -49,59 +49,6 @@ const useStyles = makeStyles({
     },
 });
 
-
-let testJsonData = `
-{
-  "errors": null,
-  "data": [
-    {
-      "ID": 1,
-      "CreatedAt": "2019-07-03T23:27:14Z",
-      "UpdatedAt": "2019-07-03T23:27:14Z",
-      "DeletedAt": null,
-      "email": "admin@admin.a",
-      "password": "af4b4f7bf36d59a2a1c7b8c3ae318ae43fa7d1714962690303ec41022ae8764a",
-      "role": "admin",
-      "token": "",
-      "CallBackUrl": "",
-      "profile": {
-        "ID": 0,
-        "CreatedAt": "0001-01-01T00:00:00Z",
-        "UpdatedAt": "0001-01-01T00:00:00Z",
-        "DeletedAt": null,
-        "firstname": "",
-        "middlename": "",
-        "lastname": "",
-        "phone": ""
-      },
-      "profileID": 0
-    },
-    {
-      "ID": 2,
-      "CreatedAt": "2019-07-03T23:27:14Z",
-      "UpdatedAt": "2019-07-03T23:27:14Z",
-      "DeletedAt": null,
-      "email": "testuser@test.t",
-      "password": "67dcd00e86fbb3ec0b796b9d435f157f00dd4e4978ff0143baabbc70cc70a6c4",
-      "role": "user",
-      "token": "",
-      "CallBackUrl": "",
-      "profile": {
-        "ID": 0,
-        "CreatedAt": "0001-01-01T00:00:00Z",
-        "UpdatedAt": "0001-01-01T00:00:00Z",
-        "DeletedAt": null,
-        "firstname": "",
-        "middlename": "",
-        "lastname": "",
-        "phone": ""
-      },
-      "profileID": 0
-    }
-  ]
-}
-`;
-
 //<Divider className={classes.divider} />
 
 export default function Users(props) {

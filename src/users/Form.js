@@ -2,6 +2,11 @@ import React from 'react';
 import {
     makeStyles
 } from '@material-ui/core/styles';
+import produce from "immer";
+import {
+    set,
+    has
+} from "lodash";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Divider from '@material-ui/core/Divider';
@@ -46,41 +51,96 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+function enhancedReducer(state, updateArg) {
+    // check if the type of update argument is a callback function
+    if (updateArg.constructor === Function) {
+        return {
+            ...state,
+            ...updateArg(state)
+        };
+    }
+
+    // if the type of update argument is an object
+    if (updateArg.constructor === Object) {
+        // does the update object have _path and _value as it's keys
+        // if yes then use them to update deep object values
+        if (has(updateArg, "_path") && has(updateArg, "_value")) {
+            const {
+                _path,
+                _value
+            } = updateArg;
+
+            return produce(state, draft => {
+                set(draft, _path, _value);
+            });
+        } else {
+            return {
+                ...state,
+                ...updateArg
+            };
+        }
+    }
+}
+
+const initialState = {
+    email: '',
+    password: '',
+    repassword: '',
+    role: '',
+    profile: {
+        firstname: '',
+        middlename: '',
+        lastname: '',
+        phone: '',
+        avatar: '',
+    }
+};
+
 export default function Form(props) {
     const classes = useStyles();
 
-    const [formdata, setFormdata] = React.useState({
-        email: '',
-        password: '',
-        repassword: '',
-        role: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        phone: '',
-        avatar: '',
-    });
+    const [formdata, setFormdata] = React.useReducer(enhancedReducer, initialState);
 
-    const [formdataerrs, setFormdataerrs] = React.useState({
-        email: '',
-        password: '',
-        repassword: '',
-        role: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        phone: '',
-        avatar: '',
-    });
+    const [formdataerrs, setFormdataerrs] = React.useReducer(enhancedReducer, initialState);
 
-    function handleChange(e) {
-        e.persist();
-        const value = e.target.value;
-        setFormdata(oldValues => ({
-            ...oldValues,
-            [e.target.name]: value,
-        }));
-    }
+    const handleChange = React.useCallback(({
+        target: {
+            value,
+            name,
+            type
+        }
+    }) => {
+        const updatePath = name.split(".");
+
+        // if the input is a checkbox then use callback function to update
+        // the toggle state based on previous state
+        if (type === 'checkbox') {
+            setFormdata((prevState) => ({
+                [name]: !prevState[name]
+            }))
+
+            return
+        }
+
+        // if we have to update the root level nodes in the form
+        if (updatePath.length === 1) {
+            const [key] = updatePath;
+
+            setFormdata({
+                [key]: value
+            });
+        }
+
+        // if we have to update nested nodes in the form object
+        // use _path and _value to update them.
+        if (updatePath.length === 2) {
+            setFormdata({
+                _path: updatePath,
+                _value: value
+            });
+        }
+    }, []);
+
 
     function changeAva(val) {
         setFormdata(oldValues => ({
@@ -93,7 +153,7 @@ export default function Form(props) {
         e.preventDefault();
         console.log(JSON.stringify(formdata));
 
-        fetch('http://localhost/api/users', {
+        /*fetch('http://localhost/api/users', {
             method: "POST",
             body: JSON.stringify(formdata),
             headers: {
@@ -117,6 +177,28 @@ export default function Form(props) {
                         }
                     } else {
                         console.log(res.data);
+                        setFormdata({
+                            email: '',
+                            password: '',
+                            repassword: '',
+                            role: '',
+                            firstname: '',
+                            middlename: '',
+                            lastname: '',
+                            phone: '',
+                            avatar: '',
+                        });
+                        setFormdataerrs({
+                            email: '',
+                            password: '',
+                            repassword: '',
+                            role: '',
+                            firstname: '',
+                            middlename: '',
+                            lastname: '',
+                            phone: '',
+                            avatar: '',
+                        });
                         props.handleClose();
                     }
                 });
@@ -129,13 +211,13 @@ export default function Form(props) {
             }
         }, function(error) {
             alert(error.message); //=> String
-        });
+        });*/
     }
 
     function handleClose(e) {
         props.handleClose(e);
 
-        setFormdata({
+        /*setFormdata({
             email: '',
             password: '',
             repassword: '',
@@ -156,7 +238,7 @@ export default function Form(props) {
             lastname: '',
             phone: '',
             avatar: '',
-        });
+        });*/
     }
 
     return (
@@ -246,14 +328,14 @@ export default function Form(props) {
                         <FormHelperText>Some important helper text</FormHelperText>
                     </FormControl>
                     <TextField
-                        value={formdata.phone}
+                        value={formdata.profile.phone}
                         onChange={handleChange}
-                        error={(formdataerrs.phone == '') ? false : true}
-                        helperText={formdataerrs.phone}
+                        error={(formdataerrs.profile.phone == '') ? false : true}
+                        helperText={formdataerrs.profile.phone}
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        name="phone"
+                        name="profile.phone"
                         label="Phone"
                         id="phone"
                     />
@@ -261,10 +343,10 @@ export default function Form(props) {
                 <Grid item xs={4}>
                     <Avatar changeAva={changeAva} />
                     <TextField
-                        value={formdata.firstname}
+                        value={formdata.profile.firstname}
                         onChange={handleChange}
-                        error={(formdataerrs.firstname == '') ? false : true}
-                        helperText={formdataerrs.firstname}
+                        error={(formdataerrs.profile.firstname == '') ? false : true}
+                        helperText={formdataerrs.profile.firstname}
                         variant="outlined"
                         margin="normal"
                         fullWidth
@@ -273,10 +355,10 @@ export default function Form(props) {
                         id="firstname"
                     />
                     <TextField
-                        value={formdata.middlename}
+                        value={formdata.profile.middlename}
                         onChange={handleChange}
-                        error={(formdataerrs.middlename == '') ? false : true}
-                        helperText={formdataerrs.middlename}
+                        error={(formdataerrs.profile.middlename == '') ? false : true}
+                        helperText={formdataerrs.profile.middlename}
                         variant="outlined"
                         margin="normal"
                         fullWidth
@@ -285,10 +367,10 @@ export default function Form(props) {
                         id="middlename"
                     />
                     <TextField
-                        value={formdata.lastname}
+                        value={formdata.profile.lastname}
                         onChange={handleChange}
-                        error={(formdataerrs.lastname == '') ? false : true}
-                        helperText={formdataerrs.lastname}
+                        error={(formdataerrs.profile.lastname == '') ? false : true}
+                        helperText={formdataerrs.profile.lastname}
                         variant="outlined"
                         margin="normal"
                         fullWidth
