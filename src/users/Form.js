@@ -103,6 +103,7 @@ export default function Form(props) {
 
     const [formdataerrs, setFormdataerrs] = React.useReducer(enhancedReducer, initialState);
 
+
     const handleChange = React.useCallback(({
         target: {
             value,
@@ -143,17 +144,20 @@ export default function Form(props) {
 
 
     function changeAva(val) {
-        setFormdata(oldValues => ({
-            ...oldValues,
-            ['avatar']: val,
-        }));
+        name = "profile.avatar"
+        const updatePath = name.split(".");
+
+        setFormdata({
+            _path: updatePath,
+            _value: val
+        });
     }
 
     function handleSave(e) {
         e.preventDefault();
         console.log(JSON.stringify(formdata));
 
-        /*fetch('http://localhost/api/users', {
+        fetch('http://localhost/api/users', {
             method: "POST",
             body: JSON.stringify(formdata),
             headers: {
@@ -167,38 +171,17 @@ export default function Form(props) {
                     if (res.errors != null) {
                         for (var one of res.errors) {
                             console.log(one);
-                            setFormdataerrs(oldValues => ({
-                                ...oldValues,
+                            setFormdataerrs({
                                 [one.item]: one.msg,
-                            }));
+                            });
                             if (one.item == 'json') {
                                 alert(one.msg);
+                            } else {
+
                             }
                         }
                     } else {
-                        console.log(res.data);
-                        setFormdata({
-                            email: '',
-                            password: '',
-                            repassword: '',
-                            role: '',
-                            firstname: '',
-                            middlename: '',
-                            lastname: '',
-                            phone: '',
-                            avatar: '',
-                        });
-                        setFormdataerrs({
-                            email: '',
-                            password: '',
-                            repassword: '',
-                            role: '',
-                            firstname: '',
-                            middlename: '',
-                            lastname: '',
-                            phone: '',
-                            avatar: '',
-                        });
+                        clearFormData();
                         props.handleClose();
                     }
                 });
@@ -211,34 +194,52 @@ export default function Form(props) {
             }
         }, function(error) {
             alert(error.message); //=> String
-        });*/
+        });
     }
 
     function handleClose(e) {
         props.handleClose(e);
+        clearFormData();
+    }
 
-        /*setFormdata({
-            email: '',
-            password: '',
-            repassword: '',
-            role: '',
-            firstname: '',
-            middlename: '',
-            lastname: '',
-            phone: '',
-            avatar: '',
+    function clearFormData() {
+        var list = objectKeysToString(initialState, []);
+        list.forEach(function name(name, index) {
+            const updatePath = name.split(".");
+
+            if (updatePath.length === 1) {
+                const [key] = updatePath;
+
+                setFormdata({
+                    [key]: ""
+                });
+            }
+
+            if (updatePath.length === 2) {
+                setFormdata({
+                    _path: updatePath,
+                    _value: ""
+                });
+            }
         });
-        setFormdataerrs({
-            email: '',
-            password: '',
-            repassword: '',
-            role: '',
-            firstname: '',
-            middlename: '',
-            lastname: '',
-            phone: '',
-            avatar: '',
-        });*/
+    }
+
+    function objectKeysToString(obj, storage, prefix) {
+        if (obj.constructor === Object) {
+            for (var prop in obj) {
+                if (obj[prop].constructor === Object) {
+                    objectKeysToString(obj[prop], storage, prop)
+                } else {
+                    if (prefix == undefined) {
+                        storage.push(prop);
+                    } else {
+                        storage.push(prefix + '.' + prop);
+                    }
+                }
+            }
+        }
+
+        return storage;
     }
 
     return (
@@ -350,7 +351,7 @@ export default function Form(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        name="firstname"
+                        name="profile.firstname"
                         label="Firstname"
                         id="firstname"
                     />
@@ -362,7 +363,7 @@ export default function Form(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        name="middlename"
+                        name="profile.middlename"
                         label="Middlename"
                         id="middlename"
                     />
@@ -374,7 +375,7 @@ export default function Form(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        name="lastname"
+                        name="profile.lastname"
                         label="Lastname"
                         id="lastname"
                     />

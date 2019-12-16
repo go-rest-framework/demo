@@ -15,6 +15,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Form from './Form.js';
 import AlertDialogSlide from './AlertDialogSlide.js';
+import Grow from '@material-ui/core/Grow';
 
 const useStyles = makeStyles({
     root: {
@@ -59,6 +60,12 @@ export default function Users(props) {
     const [data, setData] = React.useState({});
     const [datachange, setDataChange] = React.useState(0);
     const [deleteitem, setDeleteItem] = React.useState(0);
+
+    const [checked, setChecked] = React.useState(false);
+
+    function handleChange() {
+        setChecked(prev => !prev);
+    }
 
     React.useEffect(() => {
         fetch('http://localhost/api/users', {
@@ -148,23 +155,73 @@ export default function Users(props) {
         });
     }
 
+    function handleSearch(e) {
+        var v = e.target.value;
+        if (v.length == 0) {
+            setDataChange(datachange + 1);
+        }
+        if (v.length > 2) {
+            fetch('http://localhost/api/users?all=' + v, {
+                method: "GET",
+                //body: JSON.stringify(a),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + props.app.state.userdata.token
+                },
+                credentials: "same-origin"
+            }).then(function(response) {
+                if (response.status === 200) {
+                    response.json().then(function(res) {
+                        if (res.errors != null) {
+                            console.log(res.errors);
+                        } else {
+                            console.log(res.data);
+                            setData(res.data);
+                        }
+                    });
+                } else if (response.status === 401) {
+                    sessionStorage.clear();
+                    location.reload();
+                } else {
+                    alert(response.text());
+                }
+            }, function(error) {
+                alert(error.message); //=> String
+            });
+        }
+    }
 
     return (
         <div>
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
-              <IconButton className={classes.iconButton} aria-label="Menu">
+              <IconButton
+                className={classes.iconButton}
+                aria-label="Menu"
+                onClick={handleChange}
+              >
                 <MenuIcon />
               </IconButton>
               <InputBase
                 className={classes.input}
                 placeholder="Start type for search..."
                 inputProps={{ 'aria-label': 'Start type for search...' }}
+                onChange={handleSearch}
               />
-              <IconButton className={classes.iconButton} aria-label="Search">
+              <IconButton
+                  className={classes.iconButton}
+                  aria-label="Search"
+              >
                 <SearchIcon />
               </IconButton>
             </Paper>
+            <Grow in={checked}>
+              <Paper className={classes.root}>
+                  dkdkdkdkdkd
+                  dkdkdkdkdkd
+                  dkdkdkdkdkd
+              </Paper>
+            </Grow>
             <Form
                 app={props.app}
                 open={open}
@@ -176,7 +233,7 @@ export default function Users(props) {
                         <Paper key={'userID_'+data[index].ID} className={classes.items}>
                             <Avatar
                                 alt="Remy Sharp"
-                                src="https://lh3.googleusercontent.com/a-/AAuE7mAmekuYgBj8w1wXk81CVdg1N1Tmq1EJdKR6YyiEXA=s96"
+                                src={(data[index].profile.avatar != "")? data[index].profile.avatar : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOAAAADgCAMAAAAt85rTAAAAMFBMVEX29u/d3dfc3Nb39/Dr6+Tm5t7z8+zt7ebn5+Hh4dvx8erk5N7g4Nr09Ozc3NXt7eUtlyuvAAAFBklEQVR4nO2d6XKrMAxGg0XMmvT93/ZC0xBDwOBFku/Md351urg6yAZvMbcbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/ByoJBjlbD9XTlMCzGmqbVZKo7uaSq1KYg+nqbIrUVOW4fTBVk8eQhhL1ZsyQwZBskel7YSqbrGi1JU6wqQnUFjglLYXltr83ae2QGsdP9+G3wQkr6V5qHL22L6Uzc+tbR9EkJLBeijHDLX//KJoplE/bMXV0YNQthbTl2L2gdjHs4gXNkr/S/Nz7n4kOrl+KyBlZNpbo+sgCliZYXgWdWSppdCOkIfUS8bJUsNgGtPRiyqyhzkMsVjC9FbOSHN+1AvQej/yC07dtP2F/vxSHW5BsM/z1BO7DT/rALBheQbJt9ekQGjPW4lnkFay3A30zZpoiyRNfWgFk98aJpk6OOVN8yQXYbnccLNzj4RN87PvNhulhZ4gvuYDjeYyEsVnG+BILcIbBO/RyhlyC3onEaeQvBpOgP4HTyEMshUyCdvT5SQ7+eQSp9yZw4pEn/Mj4kgtwJnsOUijWoWES7I7M3r8s9rRnaoP+Jhh7H6Um/LrwCJ6vNsUIzmuswYZagl3Ef2pi6jaP4INB8G+NJ9RQSTC8Df7mL8JQ6yZzD61pzedvgwyZHhNnS6KhAwpqnEsWZMgk6O+KToRNgzv5CzXk6os+/X5j2P9oNtcrwJBruOSvo2E19MsvxJBruNR7UziG7OvY8QswZJuy8KUwKIGb9hdqyCboGREGPQQP/C4bsglSf+gXUkF362eIId+sGv0cxBUy5eTxu2jIObO9W7mm/GXyu2bIuTZB/fh9fx/y+V0yZF18oc3qi3mOTUjRZ35XDJnXB8m23bKBrRqCVs8u+F0wZF/hpVvftPf70LaNDVocpJ9LexjPDCXW6F8/CFymv5S/C4ZCmxDCi73qd2ZYqODF+vk25IyPRTAgf2c5LFIw0M9rWKJgsJ/PsEDBCD9POyxPMMrvOIfFCUb6HRqWJhjtd1RLFQS9j+V4v4MciguS9Wx1SvLbz6G0INnueDNXot9uDqUF5/1dz4NJtWS/PUNhwdf+rv1pwwx+O7VUVJDe+/P2cpjF7zuHkoL02X/4ncNMfvPKnJYgufsrt4bZ/KaiV9OucoK03j+6rqUZ/TYfaBUTpO3+WDeH5+uJxQt++c05XH6YM386gjt+n1qa2U9DcNfvXUtz+ykIHvi9DLP7yQse+v0aZvcTF/T4TZztSyxf0O/HgXQGpf1kBeXzJyuo4ScpqOInKKjjJyeo5CcmqOUnJajmJySo5ycjqOgnIqjpJyKo6SciqOknIXi4lVIEAUHdk/IgCEEIQpAVCEIQghBkBYIQhKBVPcxYQvCuxzCIzMmons8sIFgOEGQvgBkIshfADATZC2AmXfB9IMC6A1EM9i04xgre/0qQOyothGUjVfARPV8lJLwPgJHlhLf46/8wyUXw8bn8JvqwQeeNNgqnTPshZ9wWHdvSCCvRg1Gv4BwYEt0Eb877AOYPLVjVccQa6xwhmfIuBXI/LWC6ti6DtnPfaZN2B6xcNMfyK1ZRpehdOC5Vm9Qjd/N+7CE/6eden54Iq0qO01oZtpZnI08HhOz36T9FEHTEkl+xrra3Lm3meDIeO0/U14P2s2HFUPeZXzYzdx+aui2Busn7ktqVZBlwyAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4OIfpwBXYNTDKQYAAAAASUVORK5CYII="}
                                 className={classes.avatar} />
                             <div className={classes.name}>
                                 {data[index].email}

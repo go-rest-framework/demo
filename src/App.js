@@ -11,22 +11,31 @@ import './App.css';
 class App extends Component {
     constructor(props) {
         super(props);
-        var checkdata = {};
+        var userdata = {};
         var page = "signin";
         //TODO add tocken check
         if (sessionStorage.usertoken != undefined) {
-            var checkdata = {
+            userdata = {
                 id: sessionStorage.userid,
                 token: sessionStorage.usertoken,
                 email: sessionStorage.useremail,
-                role: sessionStorage.userrole,
-            }
+                role: sessionStorage.userrole
+            };
+            page = "layout";
+        } else if (localStorage.usertoken != undefined) {
+            userdata = {
+                id: localStorage.userid,
+                token: localStorage.usertoken,
+                email: localStorage.useremail,
+                role: localStorage.userrole
+            };
             page = "layout";
         }
         this.state = {
             page: page,
             content: "users",
-            userdata: checkdata
+            userdata: userdata,
+            rememberuser: false
         };
     }
 

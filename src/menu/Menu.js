@@ -156,6 +156,7 @@ export default function Menu(app) {
     function handleLogout(e) {
         e.preventDefault();
         sessionStorage.clear();
+        localStorage.clear();
         location.reload();
     }
 

@@ -55,3 +55,11 @@ services:
     volumes:
       - "./database:/var/lib/mysql"
       - "./conf/mysql:/etc/mysql/conf.d"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8080:80'
+    depends_on:
+      - db
+    networks:
+      - golangdevnet

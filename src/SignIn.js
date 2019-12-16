@@ -76,7 +76,13 @@ export default function SignIn(parent) {
         let a = {};
 
         for (var pair of data.entries()) {
-            a[pair[0]] = pair[1];
+            if (pair[0] != 'rememberme') {
+                a[pair[0]] = pair[1];
+            } else {
+                parent.el.setState({
+                    rememberuser: true,
+                });
+            }
         }
 
         fetch('http://localhost/api/users/login', {
@@ -90,16 +96,23 @@ export default function SignIn(parent) {
             response.json().then(function(res) {
                 if (res.errors === null) {
                     console.log(res.data);
-                    sessionStorage.setItem('userid', res.data.ID);
-                    sessionStorage.setItem('useremail', res.data.email);
-                    sessionStorage.setItem('userrole', res.data.role);
-                    sessionStorage.setItem('usertoken', res.data.token);
+                    if (parent.el.state.rememberuser) {
+                        localStorage.setItem('userid', res.data.ID);
+                        localStorage.setItem('useremail', res.data.email);
+                        localStorage.setItem('userrole', res.data.role);
+                        localStorage.setItem('usertoken', res.data.token);
+                    } else {
+                        sessionStorage.setItem('userid', res.data.ID);
+                        sessionStorage.setItem('useremail', res.data.email);
+                        sessionStorage.setItem('userrole', res.data.role);
+                        sessionStorage.setItem('usertoken', res.data.token);
+                    }
                     parent.el.setState({
                         userdata: {
-                            id: sessionStorage.userid,
-                            token: sessionStorage.usertoken,
-                            email: sessionStorage.useremail,
-                            role: sessionStorage.userrole,
+                            id: res.data.ID,
+                            token: res.data.token,
+                            email: res.data.email,
+                            role: res.data.role,
                         },
                     });
                     parent.el.setState({
