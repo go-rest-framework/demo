@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import MenuIcon from '@material-ui/icons/ArrowDropDown';
@@ -14,8 +15,10 @@ import DirectionsIcon from '@material-ui/icons/Directions';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Form from './Form.js';
+import FormSearch from './FormSearch.js';
 import AlertDialogSlide from './AlertDialogSlide.js';
-import Grow from '@material-ui/core/Grow';
+import Collapse from '@material-ui/core/Collapse';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles({
     root: {
@@ -29,6 +32,10 @@ const useStyles = makeStyles({
     },
     iconButton: {
         padding: 10,
+    },
+    iconButton2: {
+        padding: 10,
+        marginTop: '0.5em',
     },
     divider: {
         width: 0,
@@ -68,7 +75,7 @@ export default function Users(props) {
     }
 
     React.useEffect(() => {
-        fetch('http://localhost/api/users', {
+        fetch('/api/users', {
             method: "GET",
             //body: JSON.stringify(a),
             headers: {
@@ -126,7 +133,7 @@ export default function Users(props) {
     }
 
     function handleDelete() {
-        fetch('http://localhost/api/users/' + deleteitem, {
+        fetch('/api/users/' + deleteitem, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -161,7 +168,7 @@ export default function Users(props) {
             setDataChange(datachange + 1);
         }
         if (v.length > 2) {
-            fetch('http://localhost/api/users?all=' + v, {
+            fetch('/api/users?all=' + v, {
                 method: "GET",
                 //body: JSON.stringify(a),
                 headers: {
@@ -215,18 +222,29 @@ export default function Users(props) {
                 <SearchIcon />
               </IconButton>
             </Paper>
-            <Grow in={checked}>
+            <Collapse in={checked}>
+              <Divider className={classes.divider} />
               <Paper className={classes.root}>
-                  dkdkdkdkdkd
-                  dkdkdkdkdkd
-                  dkdkdkdkdkd
+                  <FormSearch />
               </Paper>
-            </Grow>
-            <Form
-                app={props.app}
-                open={open}
-                handleClickCreate={handleClickCreate}
-                handleClose={handleClose}/>
+            </Collapse>
+            <Grid container spacing={3}>
+                <Grid item xs={6}>
+                  <IconButton
+                      className={classes.iconButton2}
+                      aria-label="Filter Sort"
+                  >
+                    <FilterListIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={6}>
+                    <Form
+                        app={props.app}
+                        open={open}
+                        handleClickCreate={handleClickCreate}
+                        handleClose={handleClose}/>
+                </Grid>
+            </Grid>
             {
                 Object.keys(data).map((index) => {
                     return (
@@ -239,7 +257,13 @@ export default function Users(props) {
                                 {data[index].email}
                             </div>
                             <div className={classes.name}>
+                                {data[index].profile.firstname +" "+ data[index].profile.lastname}
+                            </div>
+                            <div className={classes.name}>
                                 {data[index].role}
+                            </div>
+                            <div className={classes.name}>
+                                {data[index].status}
                             </div>
                             <IconButton className={classes.iconButton} aria-label="Edit" onClick={handleClickEdit.bind(this,data[index].ID)}>
                                 <EditIcon />
