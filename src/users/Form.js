@@ -87,6 +87,7 @@ const initialState = {
     password: '',
     repassword: '',
     role: '',
+    status: '',
     profile: {
         firstname: '',
         middlename: '',
@@ -327,6 +328,25 @@ export default function Form(props) {
                             <MenuItem value={"admin"}>Admin</MenuItem>
                         </Select>
                         <FormHelperText>Some important helper text</FormHelperText>
+                    </FormControl>
+                    <FormControl fullWidth>
+                        <InputLabel
+                            htmlFor="status-helper"
+                            helperText={formdataerrs.status}
+                        >Status</InputLabel>
+                        <Select
+                            value={formdata.status}
+                            onChange={handleChange}
+                            error={(formdataerrs.status == '') ? false : true}
+                            input={<Input name="status" id="status-helper" />}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value={"active"}>Active</MenuItem>
+                            <MenuItem value={"blocked"}>Blocked</MenuItem>
+                            <MenuItem value={"draft"}>Draft</MenuItem>
+                        </Select>
                     </FormControl>
                     <TextField
                         value={formdata.profile.phone}
