@@ -47,172 +47,60 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function enhancedReducer(state, updateArg) {
-    // check if the type of update argument is a callback function
-    if (updateArg.constructor === Function) {
-        return {
-            ...state,
-            ...updateArg(state)
-        };
-    }
-
-    // if the type of update argument is an object
-    if (updateArg.constructor === Object) {
-        // does the update object have _path and _value as it's keys
-        // if yes then use them to update deep object values
-        if (has(updateArg, "_path") && has(updateArg, "_value")) {
-            const {
-                _path,
-                _value
-            } = updateArg;
-
-            return produce(state, draft => {
-                set(draft, _path, _value);
-            });
-        } else {
-            return {
-                ...state,
-                ...updateArg
-            };
-        }
-    }
-}
-
-const initialState = {
-    email: '',
-    phone: '',
-    role: '',
-    name: '',
-    id: '',
-    status: '',
-};
-
 export default function Form(props) {
     const classes = useStyles();
+    const [status, setStatus] = React.useState(null);
+    const [role, setRole] = React.useState(null);
 
-    const [formdata, setFormdata] = React.useReducer(enhancedReducer, initialState);
+    function handleFilterByEmail(e) {
+        var v = e.target.value;
+        var c = props.searchData;
+        c["email"] = v;
+        props.setSearchData(c);
+        props.setDataChange(props.datachange + 1);
+    }
 
-    const handleChange = React.useCallback(({
-        target: {
-            value,
-            name,
-            type
-        }
-    }) => {
-        const updatePath = name.split(".");
+    function handleFilterByPhone(e) {
+        var v = e.target.value;
+        var c = props.searchData;
+        c["phone"] = v;
+        props.setSearchData(c);
+        props.setDataChange(props.datachange + 1);
+    }
 
-        // if the input is a checkbox then use callback function to update
-        // the toggle state based on previous state
-        if (type === 'checkbox') {
-            setFormdata((prevState) => ({
-                [name]: !prevState[name]
-            }))
+    function handleFilterByRole(e) {
+        var v = e.target.value;
+        var c = props.searchData;
+        c["role"] = v;
+        props.setSearchData(c);
+        props.setDataChange(props.datachange + 1);
+        setRole(v)
+    }
 
-            return
-        }
+    function handleFilterByName(e) {
+        var v = e.target.value;
+        var c = props.searchData;
+        c["name"] = v;
+        props.setSearchData(c);
+        props.setDataChange(props.datachange + 1);
+    }
 
-        // if we have to update the root level nodes in the form
-        if (updatePath.length === 1) {
-            const [key] = updatePath;
+    function handleFilterById(e) {
+        var v = e.target.value;
+        var c = props.searchData;
+        c["id"] = v;
+        props.setSearchData(c);
+        props.setDataChange(props.datachange + 1);
+    }
 
-            setFormdata({
-                [key]: value
-            });
-        }
-
-        // if we have to update nested nodes in the form object
-        // use _path and _value to update them.
-        if (updatePath.length === 2) {
-            setFormdata({
-                _path: updatePath,
-                _value: value
-            });
-        }
-    }, []);
-
-    //function handleSave(e) {
-    //e.preventDefault();
-    //console.log(JSON.stringify(formdata));
-
-    //fetch('http://localhost/api/users', {
-    //method: "POST",
-    //body: JSON.stringify(formdata),
-    //headers: {
-    //"Content-Type": "application/json",
-    //"Authorization": "Bearer " + props.app.state.userdata.token
-    //},
-    //credentials: "same-origin"
-    //}).then(function(response) {
-    //if (response.status === 200) {
-    //response.json().then(function(res) {
-    //if (res.errors != null) {
-    //for (var one of res.errors) {
-    //console.log(one);
-    //setFormdataerrs({
-    //[one.item]: one.msg,
-    //});
-    //if (one.item == 'json') {
-    //alert(one.msg);
-    //} else {
-
-    //}
-    //}
-    //} else {
-    //clearFormData();
-    //props.handleClose();
-    //}
-    //});
-    //} else if (response.status === 401) {
-    //sessionStorage.clear();
-    //location.reload();
-    //} else {
-    ////TODO dont work!!!
-    //alert(response.text());
-    //}
-    //}, function(error) {
-    //alert(error.message); //=> String
-    //});
-    //}
-
-    //function clearFormData() {
-    //var list = objectKeysToString(initialState, []);
-    //list.forEach(function name(name, index) {
-    //const updatePath = name.split(".");
-
-    //if (updatePath.length === 1) {
-    //const [key] = updatePath;
-
-    //setFormdata({
-    //[key]: ""
-    //});
-    //}
-
-    //if (updatePath.length === 2) {
-    //setFormdata({
-    //_path: updatePath,
-    //_value: ""
-    //});
-    //}
-    //});
-    //}
-
-    //function objectKeysToString(obj, storage, prefix) {
-    //if (obj.constructor === Object) {
-    //for (var prop in obj) {
-    //if (obj[prop].constructor === Object) {
-    //objectKeysToString(obj[prop], storage, prop)
-    //} else {
-    //if (prefix == undefined) {
-    //storage.push(prop);
-    //} else {
-    //storage.push(prefix + '.' + prop);
-    //}
-    //}
-    //}
-    //}
-
-    //return storage;
-    //}
+    function handleFilterByStatus(e) {
+        var v = e.target.value;
+        var c = props.searchData;
+        c["status"] = v;
+        props.setSearchData(c);
+        props.setDataChange(props.datachange + 1);
+        setStatus(v)
+    }
 
     return (
         <div>
@@ -220,8 +108,7 @@ export default function Form(props) {
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                     <TextField
-                        value={formdata.email}
-                        onChange={handleChange}
+                        onChange={handleFilterByEmail}
                         variant="outlined"
                         margin="normal"
                         fullWidth
@@ -231,8 +118,7 @@ export default function Form(props) {
                         autoComplete="email"
                     />
                     <TextField
-                        value={formdata.phone}
-                        onChange={handleChange}
+                        onChange={handleFilterByPhone}
                         variant="outlined"
                         margin="normal"
                         fullWidth
@@ -245,8 +131,8 @@ export default function Form(props) {
                             htmlFor="role-helper"
                         >Role</InputLabel>
                         <Select
-                            value={formdata.role}
-                            onChange={handleChange}
+                            value={role}
+                            onChange={handleFilterByRole}
                             input={<Input name="role" id="search-role-helper" />}
                         >
                             <MenuItem value="">
@@ -259,8 +145,7 @@ export default function Form(props) {
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        value={formdata.name}
-                        onChange={handleChange}
+                        onChange={handleFilterByName}
                         variant="outlined"
                         margin="normal"
                         fullWidth
@@ -269,8 +154,7 @@ export default function Form(props) {
                         id="search_name"
                     />
                     <TextField
-                        value={formdata.id}
-                        onChange={handleChange}
+                        onChange={handleFilterById}
                         variant="outlined"
                         margin="normal"
                         fullWidth
@@ -283,8 +167,8 @@ export default function Form(props) {
                             htmlFor="status-helper"
                         >Status</InputLabel>
                         <Select
-                            value={formdata.status}
-                            onChange={handleChange}
+                            value={status}
+                            onChange={handleFilterByStatus}
                             input={<Input name="status" id="status-search-helper" />}
                         >
                             <MenuItem value="">

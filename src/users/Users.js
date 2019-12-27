@@ -19,12 +19,16 @@ import FormSearch from './FormSearch.js';
 import AlertDialogSlide from './AlertDialogSlide.js';
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
+import UMenu from '@material-ui/core/Menu';
+import UMenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles({
     root: {
         padding: '2px 4px',
-        display: 'flex',
         alignItems: 'center',
+    },
+    flex: {
+        display: 'flex',
     },
     input: {
         marginLeft: 8,
@@ -67,15 +71,25 @@ export default function Users(props) {
     const [data, setData] = React.useState({});
     const [datachange, setDataChange] = React.useState(0);
     const [deleteitem, setDeleteItem] = React.useState(0);
+    const [sortMenuAnchor, setSortMenuAnchor] = React.useState(null);
+    const [searchData, setSearchData] = React.useState({});
 
     const [checked, setChecked] = React.useState(false);
+
+    function encodeQueryData(data) {
+        const ret = [];
+        ret.push('?');
+        for (let d in data)
+            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+        return ret.join('&');
+    }
 
     function handleChange() {
         setChecked(prev => !prev);
     }
 
     React.useEffect(() => {
-        fetch('/api/users', {
+        fetch('/api/users' + encodeQueryData(searchData), {
             method: "GET",
             //body: JSON.stringify(a),
             headers: {
@@ -165,77 +179,91 @@ export default function Users(props) {
     function handleSearch(e) {
         var v = e.target.value;
         if (v.length == 0) {
-            setDataChange(datachange + 1);
+            setSearchData({});
         }
         if (v.length > 2) {
-            fetch('/api/users?all=' + v, {
-                method: "GET",
-                //body: JSON.stringify(a),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + props.app.state.userdata.token
-                },
-                credentials: "same-origin"
-            }).then(function(response) {
-                if (response.status === 200) {
-                    response.json().then(function(res) {
-                        if (res.errors != null) {
-                            console.log(res.errors);
-                        } else {
-                            console.log(res.data);
-                            setData(res.data);
-                        }
-                    });
-                } else if (response.status === 401) {
-                    sessionStorage.clear();
-                    location.reload();
-                } else {
-                    alert(response.text());
-                }
-            }, function(error) {
-                alert(error.message); //=> String
+            setSearchData({
+                all: v,
             });
         }
+        setDataChange(datachange + 1);
+    }
+
+    function handleClickSort(event) {
+        setSortMenuAnchor(event.currentTarget);
+    }
+
+    function handleSelectSort(sort) {
+        var c = searchData;
+        c["sort"] = sort;
+        setSearchData(c);
+        setDataChange(datachange + 1);
+        setSortMenuAnchor(null);
+    }
+
+    function handleCloseSort() {
+        setSortMenuAnchor(null);
     }
 
     return (
         <div>
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
-              <IconButton
-                className={classes.iconButton}
-                aria-label="Menu"
-                onClick={handleChange}
-              >
-                <MenuIcon />
-              </IconButton>
-              <InputBase
-                className={classes.input}
-                placeholder="Start type for search..."
-                inputProps={{ 'aria-label': 'Start type for search...' }}
-                onChange={handleSearch}
-              />
-              <IconButton
-                  className={classes.iconButton}
-                  aria-label="Search"
-              >
-                <SearchIcon />
-              </IconButton>
+              <div className={classes.flex}>
+                  <IconButton
+                      className={classes.iconButton}
+                      aria-label="Menu"
+                      onClick={handleChange}
+                  >
+                      <MenuIcon />
+                  </IconButton>
+                  <InputBase
+                      className={classes.input}
+                      placeholder="Start type for search..."
+                      inputProps={{ 'aria-label': 'Start type for search...' }}
+                      onChange={handleSearch}
+                  />
+                  <IconButton
+                      className={classes.iconButton}
+                      aria-label="Search"
+                  >
+                      <SearchIcon />
+                  </IconButton>
+              </div>
+              <Collapse in={checked}>
+                  <FormSearch
+                      datachange={datachange}
+                      searchData={searchData}
+                      setDataChange={setDataChange}
+                      setSearchData={setSearchData}
+                  />
+              </Collapse>
             </Paper>
-            <Collapse in={checked}>
-              <Divider className={classes.divider} />
-              <Paper className={classes.root}>
-                  <FormSearch />
-              </Paper>
-            </Collapse>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                   <IconButton
+                      onClick={handleClickSort}
                       className={classes.iconButton2}
                       aria-label="Filter Sort"
                   >
                     <FilterListIcon />
                   </IconButton>
+                  <UMenu
+                      id="sort-menu"
+                      anchorEl={sortMenuAnchor}
+                      keepMounted
+                      open={Boolean(sortMenuAnchor)}
+                      onClose={handleCloseSort}
+                  >
+                      <UMenuItem onClick={handleSelectSort.bind(this,"id")}>Sort by ID</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"-id")}>Sort by ID DESC</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"email")}>Sort by Email</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"-email")}>Sort by Email DESC</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"name")}>Sort by Name</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"-name")}>Sort by Name DESC</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"phone")}>Sort by Phone</UMenuItem>
+                      <UMenuItem onClick={handleSelectSort.bind(this,"-phone")}>Sort by Phone DESC</UMenuItem>
+                  </UMenu>
                 </Grid>
                 <Grid item xs={6}>
                     <Form
