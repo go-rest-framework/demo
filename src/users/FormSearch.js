@@ -49,8 +49,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function Form(props) {
     const classes = useStyles();
-    const [status, setStatus] = React.useState(null);
-    const [role, setRole] = React.useState(null);
+    const [status, setStatus] = React.useState('');
+    const [role, setRole] = React.useState('');
 
     function handleFilterByEmail(e) {
         var v = e.target.value;

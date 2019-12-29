@@ -21,6 +21,7 @@ import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles({
     root: {
@@ -59,6 +60,12 @@ const useStyles = makeStyles({
         lineHeight: '2.5',
         flex: 1,
     },
+    sorttitle: {
+        marginTop: '1em',
+    },
+    hide: {
+        display: 'none',
+    }
 });
 
 //<Divider className={classes.divider} />
@@ -73,6 +80,8 @@ export default function Users(props) {
     const [deleteitem, setDeleteItem] = React.useState(0);
     const [sortMenuAnchor, setSortMenuAnchor] = React.useState(null);
     const [searchData, setSearchData] = React.useState({});
+    const [sortstring, setSortSting] = React.useState(null);
+    const [itemid, setItemId] = React.useState(0);
 
     const [checked, setChecked] = React.useState(false);
 
@@ -123,7 +132,7 @@ export default function Users(props) {
     }, 5000);*/
 
     function handleClickEdit(id) {
-        console.log(id);
+        setItemId(id);
         setOpen(true);
     }
 
@@ -193,11 +202,12 @@ export default function Users(props) {
         setSortMenuAnchor(event.currentTarget);
     }
 
-    function handleSelectSort(sort) {
+    function handleSelectSort(sort, e) {
         var c = searchData;
         c["sort"] = sort;
         setSearchData(c);
         setDataChange(datachange + 1);
+        setSortSting(e.target.textContent)
         setSortMenuAnchor(null);
     }
 
@@ -248,6 +258,7 @@ export default function Users(props) {
                   >
                     <FilterListIcon />
                   </IconButton>
+                  <Chip className={(sortstring) ? classes.hide : classes.sorttitle} variant="outlined" size="small" label={sortstring} />
                   <UMenu
                       id="sort-menu"
                       anchorEl={sortMenuAnchor}
@@ -267,6 +278,8 @@ export default function Users(props) {
                 </Grid>
                 <Grid item xs={6}>
                     <Form
+                        token={props.app.state.userdata.token}
+                        itemid={itemid}
                         app={props.app}
                         open={open}
                         handleClickCreate={handleClickCreate}

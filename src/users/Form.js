@@ -104,7 +104,6 @@ export default function Form(props) {
 
     const [formdataerrs, setFormdataerrs] = React.useReducer(enhancedReducer, initialState);
 
-
     const handleChange = React.useCallback(({
         target: {
             value,
@@ -144,6 +143,64 @@ export default function Form(props) {
     }, []);
 
 
+    React.useEffect(() => {
+        if (props.itemid != 0) {
+            fetch('/api/users/' + props.itemid, {
+                method: "GET",
+                //body: JSON.stringify(a),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + props.token
+                },
+                credentials: "same-origin"
+            }).then(function(response) {
+                if (response.status === 200) {
+                    response.json().then(function(res) {
+                        if (res.errors != null) {
+                            console.log(res.errors);
+                        } else {
+                            console.log(res.data);
+
+                            //email: "testuser@test.t"
+                            //profile:
+                            //  avatar: ""
+                            //  firstname: ""
+                            //  lastname: ""
+                            //  middlename: ""
+                            //  phone: ""
+                            //role: "user"
+                            //status: "active"
+                            //token: ""
+
+                            setFormdata({
+                                email: res.data.email,
+                                password: '',
+                                repassword: '',
+                                role: res.data.role,
+                                status: res.data.status,
+                                profile: {
+                                    firstname: res.data.profile.firstname,
+                                    middlename: res.data.profile.middlename,
+                                    lastname: res.data.profile.lastname,
+                                    phone: res.data.profile.phone,
+                                    avatar: res.data.profile.avatar,
+                                }
+                            });
+                        }
+                    });
+                } else if (response.status === 401) {
+                    sessionStorage.clear();
+                    location.reload();
+                } else {
+                    alert(response.text());
+                }
+            }, function(error) {
+                alert(error.message); //=> String
+            });
+        }
+    }, [props.itemid]);
+
+
     function changeAva(val) {
         name = "profile.avatar"
         const updatePath = name.split(".");
@@ -156,8 +213,6 @@ export default function Form(props) {
 
     function handleSave(e) {
         e.preventDefault();
-        console.log(JSON.stringify(formdata));
-
         fetch('http://localhost/api/users', {
             method: "POST",
             body: JSON.stringify(formdata),
