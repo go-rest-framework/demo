@@ -142,7 +142,6 @@ export default function Form(props) {
         }
     }, []);
 
-
     React.useEffect(() => {
         if (props.itemid != 0) {
             fetch('/api/users/' + props.itemid, {
@@ -160,17 +159,6 @@ export default function Form(props) {
                             console.log(res.errors);
                         } else {
                             console.log(res.data);
-
-                            //email: "testuser@test.t"
-                            //profile:
-                            //  avatar: ""
-                            //  firstname: ""
-                            //  lastname: ""
-                            //  middlename: ""
-                            //  phone: ""
-                            //role: "user"
-                            //status: "active"
-                            //token: ""
 
                             setFormdata({
                                 email: res.data.email,
@@ -213,8 +201,14 @@ export default function Form(props) {
 
     function handleSave(e) {
         e.preventDefault();
-        fetch('http://localhost/api/users', {
-            method: "POST",
+        var method = "POST";
+        var url = "http://localhost/api/users";
+        if (props.itemid != 0) {
+            method = "PATCH";
+            url = "http://localhost/api/users/" + props.itemid;
+        }
+        fetch(url, {
+            method: method,
             body: JSON.stringify(formdata),
             headers: {
                 "Content-Type": "application/json",
@@ -237,8 +231,9 @@ export default function Form(props) {
                             }
                         }
                     } else {
-                        clearFormData();
                         props.handleClose();
+                        clearFormData();
+                        clearErrorData();
                     }
                 });
             } else if (response.status === 401) {
@@ -256,10 +251,12 @@ export default function Form(props) {
     function handleClose(e) {
         props.handleClose(e);
         clearFormData();
+        clearErrorData();
     }
 
     function clearFormData() {
         var list = objectKeysToString(initialState, []);
+        props.setItemId(0);
         list.forEach(function name(name, index) {
             const updatePath = name.split(".");
 
@@ -273,6 +270,28 @@ export default function Form(props) {
 
             if (updatePath.length === 2) {
                 setFormdata({
+                    _path: updatePath,
+                    _value: ""
+                });
+            }
+        });
+    }
+
+    function clearErrorData() {
+        var list = objectKeysToString(initialState, []);
+        list.forEach(function name(name, index) {
+            const updatePath = name.split(".");
+
+            if (updatePath.length === 1) {
+                const [key] = updatePath;
+
+                setFormdataerrs({
+                    [key]: ""
+                });
+            }
+
+            if (updatePath.length === 2) {
+                setFormdataerrs({
                     _path: updatePath,
                     _value: ""
                 });
@@ -330,7 +349,8 @@ export default function Form(props) {
                         helperText={formdataerrs.email}
                         variant="outlined"
                         margin="normal"
-                        required
+                        required={(props.itemid == 0) ? true : false}
+                        disabled={(props.itemid != 0) ? true : false}
                         fullWidth
                         id="email"
                         label="Email Address"
@@ -344,10 +364,11 @@ export default function Form(props) {
                         helperText={formdataerrs.password}
                         variant="outlined"
                         margin="normal"
-                        required
+                        required={(props.itemid == 0) ? true : false}
+                        //disabled={(props.itemid != 0) ? true : false}
                         fullWidth
                         name="password"
-                        label="Password"
+                        label={(props.itemid == 0) ? "Password" : "New Password"}
                         type="password"
                         id="password"
                     />
@@ -358,10 +379,11 @@ export default function Form(props) {
                         helperText={formdataerrs.repassword}
                         variant="outlined"
                         margin="normal"
-                        required
+                        required={(props.itemid == 0) ? true : false}
+                        //disabled={(props.itemid != 0) ? true : false}
                         fullWidth
                         name="repassword"
-                        label="Re Password"
+                        label={(props.itemid == 0) ? "Re Password" : "Re New Password"}
                         type="password"
                         id="repassword"
                     />
@@ -382,7 +404,6 @@ export default function Form(props) {
                             <MenuItem value={"user"}>User</MenuItem>
                             <MenuItem value={"admin"}>Admin</MenuItem>
                         </Select>
-                        <FormHelperText>Some important helper text</FormHelperText>
                     </FormControl>
                     <FormControl fullWidth>
                         <InputLabel
@@ -415,9 +436,6 @@ export default function Form(props) {
                         label="Phone"
                         id="phone"
                     />
-                </Grid>
-                <Grid item xs={4}>
-                    <Avatar changeAva={changeAva} />
                     <TextField
                         value={formdata.profile.firstname}
                         onChange={handleChange}
@@ -454,6 +472,9 @@ export default function Form(props) {
                         label="Lastname"
                         id="lastname"
                     />
+                </Grid>
+                <Grid item xs={4}>
+                    <Avatar changeAva={changeAva} formdata={formdata} />
                 </Grid>
             </Grid>
         </form>

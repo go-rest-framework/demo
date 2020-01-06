@@ -23,6 +23,7 @@ import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
 
+
 const useStyles = makeStyles({
     root: {
         padding: '2px 4px',
@@ -85,6 +86,7 @@ export default function Users(props) {
 
     const [checked, setChecked] = React.useState(false);
 
+
     function encodeQueryData(data) {
         const ret = [];
         ret.push('?');
@@ -125,6 +127,7 @@ export default function Users(props) {
         }, function(error) {
             alert(error.message); //=> String
         });
+
     }, [datachange]);
 
     /*setTimeout(function() {
@@ -258,7 +261,12 @@ export default function Users(props) {
                   >
                     <FilterListIcon />
                   </IconButton>
-                  <Chip className={(sortstring) ? classes.hide : classes.sorttitle} variant="outlined" size="small" label={sortstring} />
+                  <Chip
+                      className={(sortstring == null) ? classes.hide : classes.sorttitle}
+                      variant="outlined"
+                      size="small"
+                      label={sortstring}
+                  />
                   <UMenu
                       id="sort-menu"
                       anchorEl={sortMenuAnchor}
@@ -279,6 +287,7 @@ export default function Users(props) {
                 <Grid item xs={6}>
                     <Form
                         token={props.app.state.userdata.token}
+                        setItemId={setItemId}
                         itemid={itemid}
                         app={props.app}
                         open={open}

@@ -6,7 +6,7 @@ class App extends React.Component {
 
     constructor(props) {
         super(props)
-        //const src = './example/einshtein.jpg'
+        //const src = props.formdata.profile.avatar;
         this.state = {
             preview: null,
             src: null,
@@ -14,6 +14,16 @@ class App extends React.Component {
         this.onCrop = this.onCrop.bind(this)
         this.onClose = this.onClose.bind(this)
         this.onBeforeFileLoad = this.onBeforeFileLoad.bind(this)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.preview != this.props.formdata.profile.avatar) {
+            console.log(this.props.formdata.profile.avatar);
+            this.setState({
+                preview: this.props.formdata.profile.avatar
+            });
+        }
+        console.log(this.state.preview);
     }
 
     onClose() {
@@ -44,16 +54,19 @@ class App extends React.Component {
     render() {
         return (
             <div>
-        <Avatar
-          width={390}
-          height={295}
-          onCrop={this.onCrop}
-          onClose={this.onClose}
-          onBeforeFileLoad={this.onBeforeFileLoad}
-          src={this.state.src}
-          label="Upload your avatar"
-        />
-      </div>
+                <Avatar
+                    width={390}
+                    height={295}
+                    onCrop={this.onCrop}
+                    onClose={this.onClose}
+                    onBeforeFileLoad={this.onBeforeFileLoad}
+                    src={this.state.src}
+                    label="Upload your avatar"
+                />
+                {
+                (this.state.preview != null && this.state.preview != '') && <img src={this.state.preview} alt="Preview" />
+                }
+            </div>
         )
     }
 }

@@ -81,7 +81,10 @@ export default function Layout(props) {
         <div className={classes.root}>
             <CssBaseline />
             <Menu el={props} />
-            <main className={classes.content}>
+            <main
+                className={classes.content}
+                onScroll={e=> console.log("scroll " + e.target.scrollTop)}
+            >
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
                     {
