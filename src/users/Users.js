@@ -22,6 +22,7 @@ import Grid from '@material-ui/core/Grid';
 import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
+import TablePagination from "@material-ui/core/TablePagination";
 
 
 const useStyles = makeStyles({
@@ -86,6 +87,10 @@ export default function Users(props) {
 
     const [checked, setChecked] = React.useState(false);
 
+    const [count, setCount] = React.useState(0);
+    const [page, setPage] = React.useState(0);
+    const [perpage, setPerPage] = React.useState(5);
+
 
     function encodeQueryData(data) {
         const ret = [];
@@ -116,6 +121,7 @@ export default function Users(props) {
                     } else {
                         console.log(res.data);
                         setData(res.data);
+                        setCount(res.count);
                     }
                 });
             } else if (response.status === 401) {
@@ -325,6 +331,27 @@ export default function Users(props) {
                     );
                 })
             }
+            <TablePagination
+                component="nav"
+                rowsPerPageOptions={[5, 10, 25]}
+                page={page}
+                rowsPerPage={perpage}
+                count={count}
+                onChangePage={(e, p) => {
+                    var c = searchData;
+                    c["offset"] = p * perpage;
+                    setSearchData(c);
+                    setDataChange(datachange + 1);
+                    setPage(p);
+                }}
+                onChangeRowsPerPage = {e => {
+                    setPerPage(e.target.value)
+                    var c = searchData;
+                    c["limit"] = e.target.value;
+                    setSearchData(c);
+                    setDataChange(datachange + 1);
+                }}
+            />
         </div>
     );
 }
