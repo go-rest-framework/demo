@@ -16,14 +16,22 @@ class App extends React.Component {
         this.onBeforeFileLoad = this.onBeforeFileLoad.bind(this)
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentWillMount() {
         if (this.state.preview != this.props.formdata.profile.avatar) {
-            console.log(this.props.formdata.profile.avatar);
             this.setState({
                 preview: this.props.formdata.profile.avatar
             });
         }
-        console.log(this.state.preview);
+        console.log("Avatar component will mount");
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.preview != this.props.formdata.profile.avatar) {
+            this.setState({
+                preview: this.props.formdata.profile.avatar
+            });
+        }
+        console.log("Avatar component updated");
     }
 
     onClose() {

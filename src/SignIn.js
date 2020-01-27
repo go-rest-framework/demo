@@ -101,11 +101,13 @@ export default function SignIn(parent) {
                         localStorage.setItem('useremail', res.data.email);
                         localStorage.setItem('userrole', res.data.role);
                         localStorage.setItem('usertoken', res.data.token);
+                        localStorage.setItem('useravatar', res.data.profile.avatar);
                     } else {
                         sessionStorage.setItem('userid', res.data.ID);
                         sessionStorage.setItem('useremail', res.data.email);
                         sessionStorage.setItem('userrole', res.data.role);
                         sessionStorage.setItem('usertoken', res.data.token);
+                        sessionStorage.setItem('useravatar', res.data.profile.avatar);
                     }
                     parent.el.setState({
                         userdata: {

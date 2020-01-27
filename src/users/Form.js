@@ -42,6 +42,9 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'right',
         margin: '1em 0',
     },
+    buttonsWrapHidden: {
+        display: 'none',
+    },
     form: {
         padding: '2em',
     }
@@ -212,7 +215,7 @@ export default function Form(props) {
             body: JSON.stringify(formdata),
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + props.app.state.userdata.token
+                "Authorization": "Bearer " + props.token
             },
             credentials: "same-origin"
         }).then(function(response) {
@@ -319,7 +322,7 @@ export default function Form(props) {
 
     return (
         <div>
-        <div className={classes.buttonsWrap}>
+        <div className={(props.handleClickCreate != undefined) ? classes.buttonsWrap : classes.buttonsWrapHidden}>
             <Button variant="outlined" color="primary" onClick={props.handleClickCreate}>
               <AddIcon />
               Add New User

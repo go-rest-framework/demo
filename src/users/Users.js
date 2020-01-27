@@ -295,7 +295,6 @@ export default function Users(props) {
                         token={props.app.state.userdata.token}
                         setItemId={setItemId}
                         itemid={itemid}
-                        app={props.app}
                         open={open}
                         handleClickCreate={handleClickCreate}
                         handleClose={handleClose}/>

@@ -19,7 +19,8 @@ class App extends Component {
                 id: sessionStorage.userid,
                 token: sessionStorage.usertoken,
                 email: sessionStorage.useremail,
-                role: sessionStorage.userrole
+                role: sessionStorage.userrole,
+                avatar: sessionStorage.useravatar
             };
             page = "layout";
         } else if (localStorage.usertoken != undefined) {
@@ -27,7 +28,8 @@ class App extends Component {
                 id: localStorage.userid,
                 token: localStorage.usertoken,
                 email: localStorage.useremail,
-                role: localStorage.userrole
+                role: localStorage.userrole,
+                avatar: sessionStorage.useravatar
             };
             page = "layout";
         }
