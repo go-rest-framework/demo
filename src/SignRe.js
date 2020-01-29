@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
 export default function SignRe(parent) {
     const classes = useStyles();
 
+    const [erroremail, setErrEmail] = React.useState(false);
+    const [erroremailmsg, setErrEmailMsg] = React.useState(null);
+
     function switchToSignIn(e) {
         e.preventDefault();
         parent.el.setState({
@@ -50,46 +53,89 @@ export default function SignRe(parent) {
         });
     }
 
+    function handleSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        let a = {};
+
+        for (var pair of data.entries()) {
+            a[pair[0]] = pair[1];
+        }
+
+        a["callBackUrl"] = window.location.href;
+
+        fetch('http://localhost/api/users/resetrequest', {
+            method: "POST",
+            body: JSON.stringify(a),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin"
+        }).then(function(response) {
+            response.json().then(function(res) {
+                if (res.errors === null) {
+                    console.log(res.data);
+                    parent.el.setState({
+                        page: "signin",
+                        sysmsg: "Check your email for password restore instructions."
+                    });
+                } else {
+                    for (var one of res.errors) {
+                        console.log(one);
+                        if (one.item == 'email') {
+                            setErrEmail(true)
+                            setErrEmailMsg(one.msg)
+                        }
+                    }
+                }
+            });
+        }, function(error) {
+            alert(error.message); //=> String
+        });
+    }
+
     return (
         <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Restore Password
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Restore Password
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="#" variant="body2" onClick={switchToSignIn}>
-                {"Remembered your password? Sign In"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-    </Container>
+            <CssBaseline />
+            <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Restore Password
+                </Typography>
+                <form className={classes.form} noValidate onSubmit={handleSubmit}>
+                    <TextField
+                        error={erroremail}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        helperText={erroremailmsg}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        Restore Password
+                    </Button>
+                    <Grid container justify="flex-end">
+                        <Grid item>
+                            <Link href="#" variant="body2" onClick={switchToSignIn}>
+                                {"Remembered your password? Sign In"}
+                            </Link>
+                        </Grid>
+                    </Grid>
+                </form>
+            </div>
+        </Container>
     );
 }

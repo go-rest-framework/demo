@@ -4,6 +4,7 @@ import React, {
 import SignIn from "./SignIn.js";
 import SignUp from "./SignUp.js";
 import SignRe from "./SignRe.js";
+import ChangePass from "./ChangePass.js";
 import Layout from "./Layout.js";
 
 import './App.css';
@@ -33,11 +34,20 @@ class App extends Component {
             };
             page = "layout";
         }
+
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var repasstoken = url.searchParams.get("repasstoken");
+        if (repasstoken != null) {
+            page = "changepass";
+        }
+
         this.state = {
             page: page,
             content: "users",
             userdata: userdata,
-            rememberuser: false
+            rememberuser: false,
+            sysmsg: null
         };
     }
 
@@ -48,6 +58,7 @@ class App extends Component {
                 this.state.page == "signup" && <SignUp el={this} />
                 || this.state.page == "signin" && <SignIn el={this} />
                 || this.state.page == "signre" && <SignRe el={this} />
+                || this.state.page == "changepass" && <ChangePass el={this} />
                 || this.state.page == "layout" && <Layout el={this} />
                 }
             </div>

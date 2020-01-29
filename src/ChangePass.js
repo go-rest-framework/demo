@@ -43,16 +43,23 @@ const useStyles = makeStyles(theme => ({
 export default function SignIn(parent) {
     const classes = useStyles();
 
-    const [erroremail, setErrEmail] = React.useState(false);
     const [errorpass, setErrPass] = React.useState(false);
+    const [errorpassre, setErrPassRe] = React.useState(false);
 
-    const [erroremailmsg, setErrEmailMsg] = React.useState(null);
     const [errorpassmsg, setErrPassMsg] = React.useState(null);
+    const [errorpassremsg, setErrPassReMsg] = React.useState(null);
 
     function switchToSignUp(e) {
         e.preventDefault();
         parent.el.setState({
             page: "signup"
+        });
+    }
+
+    function switchToSignIn(e) {
+        e.preventDefault();
+        parent.el.setState({
+            page: "signin"
         });
     }
 
@@ -76,16 +83,16 @@ export default function SignIn(parent) {
         let a = {};
 
         for (var pair of data.entries()) {
-            if (pair[0] != 'rememberme') {
-                a[pair[0]] = pair[1];
-            } else {
-                parent.el.setState({
-                    rememberuser: true,
-                });
-            }
+            a[pair[0]] = pair[1];
         }
 
-        fetch('http://localhost/api/users/login', {
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var repasstoken = url.searchParams.get("repasstoken");
+
+        a["checkToken"] = repasstoken;
+
+        fetch('http://localhost/api/users/reset', {
             method: "POST",
             body: JSON.stringify(a),
             headers: {
@@ -94,42 +101,25 @@ export default function SignIn(parent) {
             credentials: "same-origin"
         }).then(function(response) {
             response.json().then(function(res) {
+                setErrPass(false)
+                setErrPassMsg(null)
+                setErrPassRe(false)
+                setErrPassReMsg(null)
                 if (res.errors === null) {
-                    console.log(res.data);
-                    if (parent.el.state.rememberuser) {
-                        localStorage.setItem('userid', res.data.ID);
-                        localStorage.setItem('useremail', res.data.email);
-                        localStorage.setItem('userrole', res.data.role);
-                        localStorage.setItem('usertoken', res.data.token);
-                        localStorage.setItem('useravatar', res.data.profile.avatar);
-                    } else {
-                        sessionStorage.setItem('userid', res.data.ID);
-                        sessionStorage.setItem('useremail', res.data.email);
-                        sessionStorage.setItem('userrole', res.data.role);
-                        sessionStorage.setItem('usertoken', res.data.token);
-                        sessionStorage.setItem('useravatar', res.data.profile.avatar);
-                    }
                     parent.el.setState({
-                        userdata: {
-                            id: res.data.ID,
-                            token: res.data.token,
-                            email: res.data.email,
-                            role: res.data.role,
-                        },
-                    });
-                    parent.el.setState({
-                        page: "layout",
+                        page: "signin",
+                        sysmsg: "Your password was successfully changed."
                     });
                 } else {
                     for (var one of res.errors) {
                         console.log(one);
-                        if (one.item == 'email') {
-                            setErrEmail(true)
-                            setErrEmailMsg(one.msg)
-                        }
                         if (one.item == 'password') {
                             setErrPass(true)
                             setErrPassMsg(one.msg)
+                        }
+                        if (one.item == 'repassword') {
+                            setErrPassRe(true)
+                            setErrPassReMsg(one.msg)
                         }
                     }
                 }
@@ -143,27 +133,13 @@ export default function SignIn(parent) {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                {parent.el.state.sysmsg}
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign in
+                    Change password
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                    <TextField
-                        error={erroremail}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        helperText={erroremailmsg}
-                    />
                     <TextField
                         error={errorpass}
                         variant="outlined"
@@ -171,15 +147,23 @@ export default function SignIn(parent) {
                         required
                         fullWidth
                         name="password"
-                        label="Password"
+                        label="New Password"
                         type="password"
-                        id="password"
+                        id="newpass"
                         autoComplete="current-password"
                         helperText={errorpassmsg}
                     />
-                    <FormControlLabel
-                        control={<Checkbox value="1" name="rememberme" color="primary" />}
-                        label="Remember me"
+                    <TextField
+                        error={errorpassre}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="repassword"
+                        label="New Password Re"
+                        type="password"
+                        id="newpassRe"
+                        helperText={errorpassremsg}
                     />
                     <Button
                         type="submit"
@@ -188,20 +172,18 @@ export default function SignIn(parent) {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign In
+                        Submit
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2" onClick={switchToSignRe}>
-                                Forgot password?
-                            </Link>
-                        </Grid>
-                        <Grid item>
-                            <Link href="#" variant="body2" onClick={switchToSignUp}>
-                                {"Don't have an account? Sign Up"}
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    <div>
+                        <Link href="#" variant="body2" onClick={switchToSignIn}>
+                            Remember password? Sign in
+                        </Link>
+                    </div>
+                    <div>
+                        <Link href="#" variant="body2" onClick={switchToSignUp}>
+                            {"Don't have an account? Sign Up"}
+                        </Link>
+                    </div>
                 </form>
             </div>
         </Container>

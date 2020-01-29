@@ -197,7 +197,7 @@ export default function Menu(app) {
     return (
         <div>
         <div className={clsx(classes.appBar, open && classes.appBarShift)}>
-            <Breadcrumbs />
+            <Breadcrumbs curpage={app.el.el.state.content} />
             <Notifications />
             <div className={classes.curusername}>
                 {app.el.el.state.userdata.email}

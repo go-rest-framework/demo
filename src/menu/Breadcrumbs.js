@@ -25,19 +25,16 @@ function handleClick(event) {
     alert('You clicked a breadcrumb.');
 }
 
-export default function CustomSeparator() {
+export default function CustomSeparator(prop) {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
               <Link color="inherit" href="/" onClick={handleClick}>
-                Material-UI
+                My site admin panel
               </Link>
-              <Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>
-                Core
-              </Link>
-              <Typography color="textPrimary">Breadcrumb</Typography>
+              <Typography color="textPrimary">{prop.curpage}</Typography>
             </Breadcrumbs>
         </div>
     );
