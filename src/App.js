@@ -5,6 +5,7 @@ import SignIn from "./SignIn.js";
 import SignUp from "./SignUp.js";
 import SignRe from "./SignRe.js";
 import ChangePass from "./ChangePass.js";
+import EmailConfirm from "./EmailConfirm.js";
 import Layout from "./Layout.js";
 
 import './App.css';
@@ -38,8 +39,13 @@ class App extends Component {
         var url_string = window.location.href;
         var url = new URL(url_string);
         var repasstoken = url.searchParams.get("repasstoken");
+        var token = url.searchParams.get("token");
         if (repasstoken != null) {
             page = "changepass";
+        }
+
+        if (token != null) {
+            page = "emailconfirm";
         }
 
         this.state = {
@@ -59,6 +65,7 @@ class App extends Component {
                 || this.state.page == "signin" && <SignIn el={this} />
                 || this.state.page == "signre" && <SignRe el={this} />
                 || this.state.page == "changepass" && <ChangePass el={this} />
+                || this.state.page == "emailconfirm" && <EmailConfirm el={this} />
                 || this.state.page == "layout" && <Layout el={this} />
                 }
             </div>
