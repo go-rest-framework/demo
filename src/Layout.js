@@ -90,7 +90,7 @@ export default function Layout(props) {
                     {
                         props.el.state.content == "dashboard" && <Dashboard />
                         || props.el.state.content == "users" && <Users app={props.el} />
-                        || props.el.state.content == "elements" && <ContentElements />
+                        || props.el.state.content == "elements" && <ContentElements app={props.el} />
                     }
                 </Container>
             </main>

@@ -50,7 +50,7 @@ class App extends Component {
 
         this.state = {
             page: page,
-            content: "users",
+            content: "elements",
             userdata: userdata,
             rememberuser: false,
             sysmsg: null

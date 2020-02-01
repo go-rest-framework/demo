@@ -52,91 +52,6 @@ const useStyles = makeStyles({
 });
 
 
-let testJsonData = `
-{
-  "errors": null,
-  "data": [
-    {
-        "ID": 1,
-        "CreatedAt": "2019-07-24T01:26:27Z",
-        "UpdatedAt": "2019-07-24T01:26:27Z",
-        "DeletedAt": null,
-        "urld": "nihil",
-        "userID": 1,
-        "parent": 0,
-        "title": "OCCAECATI VOLUPTATEM",
-        "description": "quasi et ullam natus recusandae sed vero. pariatur repellat quae recusandae veritatis occaecati! quod dolorem ipsa facilis adipisci. sed quas nesciunt odit autem. voluptatem alias qui magni beatae a! modi temporibus iste omnis. et qui numquam quia aut.",
-        "content": "Culpa pariatur id nulla fugit modi Quisquam libero debitis similique assumenda ea dolorem Ipsum sint eligendi accusamus corporis nihil! Quo aperiam delectus consequatur nam cumque voluptates? Perspiciatis vitae dolorum atque error ab doloremque sequi Accusamus nobis cumque molestiae placeat voluptatum. Consectetur reiciendis facilis autem nulla reprehenderit amet delectus dicta. Quo suscipit numquam atque dolorum aperiam Beatae velit necessitatibus laborum molestiae ut unde. Ducimus minima architecto harum earum nisi Quam et laudantium temporibus delectus facere similique, sit eaque deserunt laboriosam. Dolores qui perspiciatis nostrum sit exercitationem! Officiis voluptate sint assumenda sequi quibusdam aliquid",
-        "meta_title": "NECESSITATIBUS VOLUPTATEM CONSEQUATUR VERO ACCUSANTIUM",
-        "meta_descr": "tempora doloremque dolores officia exercitationem autem commodi porro. minima illo qui quo. adipisci blanditiis eum commodi facere et!",
-        "kind": 1,
-        "status": 1,
-        "tags": "news",
-        "elements": [
-            {
-                "ID": 3,
-                "CreatedAt": "2019-07-24T01:26:27Z",
-                "UpdatedAt": "2019-07-24T01:26:27Z",
-                "DeletedAt": null,
-                "urld": "quia",
-                "userID": 1,
-                "parent": 1,
-                "title": "FFDDDDKKFFFF FFFKDDDKDDSSSSS",
-                "description": "in qui veritatis veniam mollitia laudantium amet. quia sed enim. sed natus quidem assumenda labore. voluptate qui molestiae quia vel vel rem minima. voluptatem voluptatum ut voluptatem quos et quam. dolore voluptas voluptas. omnis deleniti est perspiciatis veniam soluta voluptatem eius.",
-                "content": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                "meta_title": "SEQUI UT",
-                "meta_descr": "libero voluptate deleniti dignissimos et explicabo magni. autem consequatur porro. repellendus officia et. sed enim non error placeat quod natus. et vero quia. assumenda et commodi. tempore excepturi quibusdam laborum. quis deleniti quidem deserunt et quaerat cupiditate aut. qui vel sed voluptatem.",
-                "kind": 1,
-                "status": 1,
-                "tags": "news,test",
-                "elements": null,
-                "comments": null
-            },
-            {
-                "ID": 4,
-                "CreatedAt": "2019-07-24T01:26:27Z",
-                "UpdatedAt": "2019-07-24T01:26:27Z",
-                "DeletedAt": null,
-                "urld": "quia",
-                "userID": 1,
-                "parent": 1,
-                "title": "KKKKLSSLSSKKKK IISII IIIII",
-                "description": "in qui veritatis veniam mollitia laudantium amet. quia sed enim. sed natus quidem assumenda labore. voluptate qui molestiae quia vel vel rem minima. voluptatem voluptatum ut voluptatem quos et quam. dolore voluptas voluptas. omnis deleniti est perspiciatis veniam soluta voluptatem eius.",
-                "content": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                "meta_title": "SEQUI UT",
-                "meta_descr": "libero voluptate deleniti dignissimos et explicabo magni. autem consequatur porro. repellendus officia et. sed enim non error placeat quod natus. et vero quia. assumenda et commodi. tempore excepturi quibusdam laborum. quis deleniti quidem deserunt et quaerat cupiditate aut. qui vel sed voluptatem.",
-                "kind": 1,
-                "status": 1,
-                "tags": "news,test",
-                "elements": null,
-                "comments": null
-            }
-        ],
-        "comments": null
-    },
-    {
-        "ID": 2,
-        "CreatedAt": "2019-07-24T01:26:27Z",
-        "UpdatedAt": "2019-07-24T01:26:27Z",
-        "DeletedAt": null,
-        "urld": "quia",
-        "userID": 1,
-        "parent": 1,
-        "title": "TEMPORA EARUM ET",
-        "description": "in qui veritatis veniam mollitia laudantium amet. quia sed enim. sed natus quidem assumenda labore. voluptate qui molestiae quia vel vel rem minima. voluptatem voluptatum ut voluptatem quos et quam. dolore voluptas voluptas. omnis deleniti est perspiciatis veniam soluta voluptatem eius.",
-        "content": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        "meta_title": "SEQUI UT",
-        "meta_descr": "libero voluptate deleniti dignissimos et explicabo magni. autem consequatur porro. repellendus officia et. sed enim non error placeat quod natus. et vero quia. assumenda et commodi. tempore excepturi quibusdam laborum. quis deleniti quidem deserunt et quaerat cupiditate aut. qui vel sed voluptatem.",
-        "kind": 1,
-        "status": 1,
-        "tags": "news,test",
-        "elements": null,
-        "comments": null
-    }
-  ]
-}
-`;
-
 //<Divider className={classes.divider} />
 
 function Item(props) {
@@ -191,43 +106,149 @@ function Item(props) {
 
 export default function ContentElements(props) {
     const classes = useStyles();
+    const [editID, setEditID] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [deleteopen, setDeleteOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
 
-    let data = JSON.parse(testJsonData);
-    data = data.data
-    let keys = Object.keys(data);
+    const [data, setData] = React.useState({});
+    const [datachange, setDataChange] = React.useState(0);
+    const [deleteitem, setDeleteItem] = React.useState(0);
+    const [sortMenuAnchor, setSortMenuAnchor] = React.useState(null);
+    const [searchData, setSearchData] = React.useState({});
+    const [sortstring, setSortSting] = React.useState(null);
+    const [itemid, setItemId] = React.useState(0);
 
-    function handleClickOpen() {
+    const [checked, setChecked] = React.useState(false);
+
+    const [count, setCount] = React.useState(0);
+    const [page, setPage] = React.useState(0);
+    const [perpage, setPerPage] = React.useState(5);
+
+    function encodeQueryData(data) {
+        const ret = [];
+        ret.push('?');
+        for (let d in data)
+            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+        return ret.join('&');
+    }
+
+    function handleChange() {
+        setChecked(prev => !prev);
+    }
+
+    React.useEffect(() => {
+        fetch('/api/contentelements' + encodeQueryData(searchData), {
+            method: "GET",
+            //body: JSON.stringify(a),
+            headers: {
+                "Content-Type": "application/json",
+                //"Authorization": "Bearer " + props.app.state.userdata.token
+            },
+            credentials: "same-origin"
+        }).then(function(response) {
+            if (response.status === 200) {
+                response.json().then(function(res) {
+                    if (res.errors != null) {
+                        console.log(res.errors);
+                    } else {
+                        console.log(res.data);
+                        setData(res.data);
+                        setCount(res.count);
+                    }
+                });
+            } else {
+                alert(response.text());
+            }
+        }, function(error) {
+            alert(error.message); //=> String
+        });
+
+    }, [datachange]);
+
+
+    function handleClickEdit(id) {
+        setItemId(id);
+        setOpen(true);
+    }
+
+    function handleClickCreate() {
         setOpen(true);
     }
 
     function handleClose() {
         setOpen(false);
+        setDataChange(datachange + 1);
     }
 
-    function handleDeleteAsk() {
+    function handleDeleteAsk(id) {
         setDeleteOpen(true);
+        setDeleteItem(id);
     }
 
     function handleDeleteAbort() {
         setDeleteOpen(false);
+        setDeleteItem(0);
     }
 
     function handleDelete() {
-        setDeleteOpen(false);
-        alert('send request for delete element');
+        fetch('/api/users/' + deleteitem, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + props.app.state.userdata.token
+            },
+            credentials: "same-origin"
+        }).then(function(response) {
+            if (response.status === 200) {
+                response.json().then(function(res) {
+                    if (res.errors != null) {
+                        console.log(res.errors);
+                    } else {
+                        setDeleteItem(0);
+                        setDeleteOpen(false);
+                        setDataChange(datachange + 1);
+                    }
+                });
+            } else if (response.status === 401) {
+                sessionStorage.clear();
+                location.reload();
+            } else {
+                alert(response.text());
+            }
+        }, function(error) {
+            alert(error.message); //=> String
+        });
     }
 
-    function handleSMClick(event) {
-        setAnchorEl(event.currentTarget);
+    function handleSearch(e) {
+        var v = e.target.value;
+        if (v.length == 0) {
+            setSearchData({});
+        }
+        if (v.length > 2) {
+            setSearchData({
+                all: v,
+            });
+        }
+        setDataChange(datachange + 1);
     }
 
-    function handleSMClose() {
-        setAnchorEl(null);
+    function handleClickSort(event) {
+        setSortMenuAnchor(event.currentTarget);
     }
 
+    function handleSelectSort(sort, e) {
+        var c = searchData;
+        c["sort"] = sort;
+        setSearchData(c);
+        setDataChange(datachange + 1);
+        setSortSting(e.target.textContent)
+        setSortMenuAnchor(null);
+    }
+
+    function handleCloseSort() {
+        setSortMenuAnchor(null);
+    }
 
     return (
         <div>
@@ -236,20 +257,25 @@ export default function ContentElements(props) {
               <IconButton
                   className={classes.iconButton}
                   aria-label="Menu"
-                  onClick={handleSMClick}
+                  onClick={handleClickSort}
               >
                 <MenuIcon />
               </IconButton>
               <UMenu
-                  id="user-menu"
-                  anchorEl={anchorEl}
+                  id="sort-menu"
+                  anchorEl={sortMenuAnchor}
                   keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={handleSMClose}
+                  open={Boolean(sortMenuAnchor)}
+                  onClose={handleCloseSort}
               >
-                  <UMenuItem onClick={handleSMClose}>Menu1</UMenuItem>
-                  <UMenuItem onClick={handleSMClose}>Menu2</UMenuItem>
-                  <UMenuItem onClick={handleSMClose}>Menu3</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"id")}>Sort by ID</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"-id")}>Sort by ID DESC</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"email")}>Sort by Email</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"-email")}>Sort by Email DESC</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"name")}>Sort by Name</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"-name")}>Sort by Name DESC</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"phone")}>Sort by Phone</UMenuItem>
+                  <UMenuItem onClick={handleSelectSort.bind(this,"-phone")}>Sort by Phone DESC</UMenuItem>
               </UMenu>
               <InputBase
                 className={classes.input}
@@ -260,9 +286,15 @@ export default function ContentElements(props) {
                 <SearchIcon />
               </IconButton>
             </Paper>
-            <Form open={open} handleClickOpen={handleClickOpen} handleClose={handleClose}/>
+            <Form
+                token={props.app.state.userdata.token}
+                setItemId={setItemId}
+                itemid={itemid}
+                open={open}
+                handleClickCreate={handleClickCreate}
+                handleClose={handleClose}/>
             {
-                keys.map((index) => {
+                Object.keys(data).map((index) => {
                     return (
                         <Item
                             data={data}
