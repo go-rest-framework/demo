@@ -79,10 +79,10 @@ function Item(props) {
                 <div>
                     {data[index].status}
                 </div>
-                <IconButton className={classes.iconButton} aria-label="Edit" onClick={props.handleClickOpen}>
+                <IconButton className={classes.iconButton} aria-label="Edit" onClick={props.handleClickEdit.bind(this,data[index].ID)}>
                     <EditIcon />
                 </IconButton>
-                <IconButton className={classes.iconButton} aria-label="Delete" onClick={props.handleDeleteAsk}>
+                <IconButton className={classes.iconButton} aria-label="Delete" onClick={props.handleDeleteAsk.bind(this, data[index].ID)}>
                     <DeleteIcon />
                 </IconButton>
             </Paper>
@@ -93,7 +93,7 @@ function Item(props) {
                             data={elements}
                             index={index}
                             key={'elementID_'+elements[index].ID}
-                            handleClickOpen={props.handleClickOpen}
+                            handleClickEdit={props.handleClickEdit}
                             handleDeleteAsk={props.handleDeleteAsk}
                             lvl={props.lvl+1}
                         />
@@ -191,7 +191,7 @@ export default function ContentElements(props) {
     }
 
     function handleDelete() {
-        fetch('/api/users/' + deleteitem, {
+        fetch('/api/contentelements/' + deleteitem, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -300,7 +300,7 @@ export default function ContentElements(props) {
                             data={data}
                             index={index}
                             key={'elementID_'+data[index].ID}
-                            handleClickOpen={handleClickOpen}
+                            handleClickEdit={handleClickEdit}
                             handleDeleteAsk={handleDeleteAsk}
                             lvl={0}
                         />

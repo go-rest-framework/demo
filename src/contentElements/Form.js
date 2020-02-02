@@ -90,13 +90,12 @@ function enhancedReducer(state, updateArg) {
 
 const initialState = {
     urld: '',
-    parent: '',
+    parent: 1,
     title: '',
     description: '',
     content: '',
     meta_title: '',
     meta_descr: '',
-    kind: '',
     status: '',
     tags: '',
 };
@@ -148,7 +147,7 @@ export default function Form(props) {
 
     React.useEffect(() => {
         if (props.itemid != 0) {
-            fetch('/api/users/' + props.itemid, {
+            fetch('/api/contentelements/' + props.itemid, {
                 method: "GET",
                 //body: JSON.stringify(a),
                 headers: {
@@ -165,18 +164,15 @@ export default function Form(props) {
                             console.log(res.data);
 
                             setFormdata({
-                                email: res.data.email,
-                                password: '',
-                                repassword: '',
-                                role: res.data.role,
+                                urld: res.data.urld,
+                                parent: res.data.parent,
+                                title: res.data.title,
+                                description: res.data.description,
+                                content: res.data.content,
+                                meta_title: res.data.meta_title,
+                                meta_descr: res.data.meta_descr,
                                 status: res.data.status,
-                                profile: {
-                                    firstname: res.data.profile.firstname,
-                                    middlename: res.data.profile.middlename,
-                                    lastname: res.data.profile.lastname,
-                                    phone: res.data.profile.phone,
-                                    avatar: res.data.profile.avatar,
-                                }
+                                tags: res.data.tags,
                             });
                         }
                     });
@@ -195,11 +191,12 @@ export default function Form(props) {
 
     function handleSave(e) {
         e.preventDefault();
+        console.log(formdata);
         var method = "POST";
-        var url = "http://localhost/api/users";
+        var url = "/api/contentelements";
         if (props.itemid != 0) {
             method = "PATCH";
-            url = "http://localhost/api/users/" + props.itemid;
+            url = "/api/contentelements/" + props.itemid;
         }
         fetch(url, {
             method: method,
@@ -328,7 +325,7 @@ export default function Form(props) {
                         <Typography variant="h6" className={classes.title}>
                             Add New Element
                         </Typography>
-                        <Button color="inherit" onClick={props.handleClose}>
+                        <Button color="inherit" onClick={handleSave}>
                             save
                         </Button>
                     </Toolbar>
@@ -337,6 +334,38 @@ export default function Form(props) {
                     <Grid container spacing={3}>
                         <Grid item xs={6}>
                             <TextField
+                                value={formdata.urld}
+                                onChange={handleChange}
+                                error={(formdataerrs.urld == '') ? false : true}
+                                helperText={formdataerrs.urld}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="urld"
+                                label="Urld"
+                                id="urld"
+                            />
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="parent-helper">Parent</InputLabel>
+                                <Select
+                                    value={formdata.parent}
+                                    onChange={handleChange}
+                                    error={(formdataerrs.parent == '') ? false : true}
+                                    input={<Input name="parent" id="parent-helper" />}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    <MenuItem value={0}>Root</MenuItem>
+                                </Select>
+                                <FormHelperText>Some important helper text</FormHelperText>
+                            </FormControl>
+                            <TextField
+                                value={formdata.title}
+                                onChange={handleChange}
+                                error={(formdataerrs.title == '') ? false : true}
+                                helperText={formdataerrs.title}
                                 variant="outlined"
                                 margin="normal"
                                 required
@@ -346,6 +375,10 @@ export default function Form(props) {
                                 name="title"
                             />
                             <TextField
+                                value={formdata.description}
+                                onChange={handleChange}
+                                error={(formdataerrs.description == '') ? false : true}
+                                helperText={formdataerrs.description}
                                 variant="outlined"
                                 margin="normal"
                                 required
@@ -355,15 +388,10 @@ export default function Form(props) {
                                 name="description"
                             />
                             <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="urld"
-                                label="Urld"
-                                id="urld"
-                            />
-                            <TextField
+                                value={formdata.meta_title}
+                                onChange={handleChange}
+                                error={(formdataerrs.meta_title == '') ? false : true}
+                                helperText={formdataerrs.meta_title}
                                 variant="outlined"
                                 margin="normal"
                                 required
@@ -373,6 +401,10 @@ export default function Form(props) {
                                 name="meta_title"
                             />
                             <TextField
+                                value={formdata.meta_descr}
+                                onChange={handleChange}
+                                error={(formdataerrs.meta_descr == '') ? false : true}
+                                helperText={formdataerrs.meta_descr}
                                 variant="outlined"
                                 margin="normal"
                                 required
@@ -382,6 +414,10 @@ export default function Form(props) {
                                 name="meta_descr"
                             />
                             <TextField
+                                value={formdata.tags}
+                                onChange={handleChange}
+                                error={(formdataerrs.tags == '') ? false : true}
+                                helperText={formdataerrs.tags}
                                 variant="outlined"
                                 margin="normal"
                                 required
@@ -393,7 +429,9 @@ export default function Form(props) {
                             <FormControl fullWidth>
                                 <InputLabel htmlFor="status-helper">Status</InputLabel>
                                 <Select
+                                    value={formdata.status}
                                     onChange={handleChange}
+                                    error={(formdataerrs.status == '') ? false : true}
                                     input={<Input name="status" id="status-helper" />}
                                 >
                                     <MenuItem value="">

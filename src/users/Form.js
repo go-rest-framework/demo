@@ -205,10 +205,10 @@ export default function Form(props) {
     function handleSave(e) {
         e.preventDefault();
         var method = "POST";
-        var url = "http://localhost/api/users";
+        var url = "/api/users";
         if (props.itemid != 0) {
             method = "PATCH";
-            url = "http://localhost/api/users/" + props.itemid;
+            url = "/api/users/" + props.itemid;
         }
         fetch(url, {
             method: method,
@@ -229,8 +229,6 @@ export default function Form(props) {
                             });
                             if (one.item == 'json') {
                                 alert(one.msg);
-                            } else {
-
                             }
                         }
                     } else {
