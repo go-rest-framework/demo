@@ -12,7 +12,8 @@ import {
     RichUtils,
     getDefaultKeyBinding,
     AtomicBlockUtils,
-    convertToRaw
+    convertToRaw,
+    convertFromRaw
 } from 'draft-js';
 import BlockStyleControls from './BlockSC.js';
 import InlineStyleControls from './InlineSC.js';
@@ -40,12 +41,18 @@ export default class MyEditor extends React.Component {
                 editorState
             });
             const content = this.state.editorState.getCurrentContent();
-            console.log(convertToRaw(content));
+            console.log(JSON.stringify(convertToRaw(content)));
+            props.setFormdata({
+                content: JSON.stringify(convertToRaw(content)),
+            });
         }
         this.onURLChange = (e) => this.setState({
             urlValue: e.target.value
         });
 
+        //TODO data restore realisation
+        //var testcontent = `{"blocks":[{"key":"943rm","text":"fffffffffff","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}`;
+        //this.state.editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(testcontent)));
 
         this.handleKeyCommand = this._handleKeyCommand.bind(this);
         this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);

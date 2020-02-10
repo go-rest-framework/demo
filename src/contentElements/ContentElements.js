@@ -17,11 +17,15 @@ import Form from './Form.js';
 import AlertDialogSlide from './AlertDialogSlide.js';
 import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
+import Grid from '@material-ui/core/Grid';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import Chip from '@material-ui/core/Chip';
+import Collapse from '@material-ui/core/Collapse';
+import FormSearch from './FormSearch.js';
 
 const useStyles = makeStyles({
     root: {
         padding: '2px 4px',
-        display: 'flex',
         alignItems: 'center',
     },
     input: {
@@ -49,6 +53,12 @@ const useStyles = makeStyles({
         lineHeight: '2.5',
         flex: 1,
     },
+    hide: {
+        display: 'none',
+    },
+    flex: {
+        display: 'flex',
+    },
 });
 
 
@@ -67,11 +77,17 @@ function Item(props) {
     return (
         <div>
             <Paper className={classes.items} style={{marginLeft:props.lvl+'em'}}>
+                <div>
+                    {data[index].ID}
+                </div>
                 <div className={classes.name}>
                     {data[index].title}
                 </div>
                 <div className={classes.name}>
                     {data[index].urld}
+                </div>
+                <div>
+                    {data[index].parent}
                 </div>
                 <div>
                     {data[index].kind}
@@ -254,45 +270,79 @@ export default function ContentElements(props) {
         <div>
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
-              <IconButton
-                  className={classes.iconButton}
-                  aria-label="Menu"
-                  onClick={handleClickSort}
-              >
-                <MenuIcon />
-              </IconButton>
-              <UMenu
-                  id="sort-menu"
-                  anchorEl={sortMenuAnchor}
-                  keepMounted
-                  open={Boolean(sortMenuAnchor)}
-                  onClose={handleCloseSort}
-              >
-                  <UMenuItem onClick={handleSelectSort.bind(this,"id")}>Sort by ID</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"-id")}>Sort by ID DESC</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"email")}>Sort by Email</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"-email")}>Sort by Email DESC</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"name")}>Sort by Name</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"-name")}>Sort by Name DESC</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"phone")}>Sort by Phone</UMenuItem>
-                  <UMenuItem onClick={handleSelectSort.bind(this,"-phone")}>Sort by Phone DESC</UMenuItem>
-              </UMenu>
-              <InputBase
-                className={classes.input}
-                placeholder="Start type for search..."
-                inputProps={{ 'aria-label': 'Start type for search...' }}
-              />
-              <IconButton className={classes.iconButton} aria-label="Search">
-                <SearchIcon />
-              </IconButton>
+                <div className={classes.flex}>
+                    <IconButton
+                        className={classes.iconButton}
+                        aria-label="Menu"
+                        onClick={handleChange}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <InputBase
+                        className={classes.input}
+                        placeholder="Start type for search..."
+                        inputProps={{ 'aria-label': 'Start type for search...' }}
+                        onChange={handleSearch}
+                    />
+                    <IconButton className={classes.iconButton} aria-label="Search">
+                        <SearchIcon />
+                    </IconButton>
+                </div>
+                <Collapse in={checked}>
+                    <FormSearch
+                        datachange={datachange}
+                        searchData={searchData}
+                        setDataChange={setDataChange}
+                        setSearchData={setSearchData}
+                    />
+                </Collapse>
             </Paper>
-            <Form
-                token={props.app.state.userdata.token}
-                setItemId={setItemId}
-                itemid={itemid}
-                open={open}
-                handleClickCreate={handleClickCreate}
-                handleClose={handleClose}/>
+            <Grid container spacing={3}>
+                <Grid item xs={6}>
+                    <IconButton
+                        onClick={handleClickSort}
+                        className={classes.iconButton2}
+                        aria-label="Filter Sort"
+                    >
+                        <FilterListIcon />
+                    </IconButton>
+                    <Chip
+                        className={(sortstring == null) ? classes.hide : classes.sorttitle}
+                        variant="outlined"
+                        size="small"
+                        label={sortstring}
+                    />
+                    <UMenu
+                        id="sort-menu"
+                        anchorEl={sortMenuAnchor}
+                        keepMounted
+                        open={Boolean(sortMenuAnchor)}
+                        onClose={handleCloseSort}
+                    >
+                        <UMenuItem onClick={handleSelectSort.bind(this,"id")}>Sort by ID</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"-id")}>Sort by ID DESC</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"title")}>Sort by title</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"-title")}>Sort by title DESC</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"created_at")}>Sort by create date</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"-created_at")}>Sort by create date DESC</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"status")}>Sort by status</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"-status")}>Sort by status DESC</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"user")}>Sort by user</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"-user")}>Sort by user DESC</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"kind")}>Sort by kind</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this,"-kind")}>Sort by kind DESC</UMenuItem>
+                    </UMenu>
+                </Grid>
+                <Grid item xs={6}>
+                    <Form
+                        token={props.app.state.userdata.token}
+                        setItemId={setItemId}
+                        itemid={itemid}
+                        open={open}
+                        handleClickCreate={handleClickCreate}
+                        handleClose={handleClose}/>
+                </Grid>
+            </Grid>
             {
                 Object.keys(data).map((index) => {
                     return (

@@ -444,7 +444,7 @@ export default function Form(props) {
                             </FormControl>
                         </Grid>
                         <Grid item xs={6}>
-                            <MyEditor />
+                            <MyEditor setFormdata={setFormdata} />
                         </Grid>
                     </Grid>
                 </form>
