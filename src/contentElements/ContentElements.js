@@ -18,10 +18,13 @@ import AlertDialogSlide from './AlertDialogSlide.js';
 import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import Chip from '@material-ui/core/Chip';
 import Collapse from '@material-ui/core/Collapse';
 import FormSearch from './FormSearch.js';
+import TablePagination from "@material-ui/core/TablePagination";
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 const useStyles = makeStyles({
     root: {
@@ -58,6 +61,13 @@ const useStyles = makeStyles({
     },
     flex: {
         display: 'flex',
+    },
+    sorttitle: {
+        marginTop: '1.5em',
+    },
+    viewtitle: {
+        marginTop: '1.5em',
+        marginLeft: '1em',
     },
 });
 
@@ -130,7 +140,9 @@ export default function ContentElements(props) {
     const [datachange, setDataChange] = React.useState(0);
     const [deleteitem, setDeleteItem] = React.useState(0);
     const [sortMenuAnchor, setSortMenuAnchor] = React.useState(null);
-    const [searchData, setSearchData] = React.useState({});
+    const [searchData, setSearchData] = React.useState({
+        tree: '0',
+    });
     const [sortstring, setSortSting] = React.useState(null);
     const [itemid, setItemId] = React.useState(0);
 
@@ -139,6 +151,9 @@ export default function ContentElements(props) {
     const [count, setCount] = React.useState(0);
     const [page, setPage] = React.useState(0);
     const [perpage, setPerPage] = React.useState(5);
+
+    const [viewMenuAnchor, setViewMenuAnchor] = React.useState(null);
+    const [viewstring, setViewSting] = React.useState(null);
 
     function encodeQueryData(data) {
         const ret = [];
@@ -266,6 +281,23 @@ export default function ContentElements(props) {
         setSortMenuAnchor(null);
     }
 
+    function handleClickView(event) {
+        setViewMenuAnchor(event.currentTarget);
+    }
+
+    function handleSelectView(view, e) {
+        var c = searchData;
+        c["tree"] = view;
+        setSearchData(c);
+        setDataChange(datachange + 1);
+        setViewSting(e.target.textContent)
+        setViewMenuAnchor(null);
+    }
+
+    function handleCloseView() {
+        setViewMenuAnchor(null);
+    }
+
     return (
         <div>
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
@@ -299,18 +331,12 @@ export default function ContentElements(props) {
             </Paper>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
-                    <IconButton
-                        onClick={handleClickSort}
-                        className={classes.iconButton2}
-                        aria-label="Filter Sort"
-                    >
-                        <FilterListIcon />
-                    </IconButton>
                     <Chip
-                        className={(sortstring == null) ? classes.hide : classes.sorttitle}
+                        className={classes.sorttitle}
+                        onClick={handleClickSort}
                         variant="outlined"
                         size="small"
-                        label={sortstring}
+                        label={(sortstring == null) ? 'Sort by ID DESC' : sortstring}
                     />
                     <UMenu
                         id="sort-menu"
@@ -325,12 +351,24 @@ export default function ContentElements(props) {
                         <UMenuItem onClick={handleSelectSort.bind(this,"-title")}>Sort by title DESC</UMenuItem>
                         <UMenuItem onClick={handleSelectSort.bind(this,"created_at")}>Sort by create date</UMenuItem>
                         <UMenuItem onClick={handleSelectSort.bind(this,"-created_at")}>Sort by create date DESC</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"status")}>Sort by status</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"-status")}>Sort by status DESC</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"user")}>Sort by user</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"-user")}>Sort by user DESC</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"kind")}>Sort by kind</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"-kind")}>Sort by kind DESC</UMenuItem>
+                    </UMenu>
+                    <Chip
+                        className={classes.viewtitle}
+                        onClick={handleClickView}
+                        variant="outlined"
+                        size="small"
+                        label={(viewstring == null) ? 'Category view' : viewstring}
+                    />
+                    <UMenu
+                        id="view-menu"
+                        anchorEl={viewMenuAnchor}
+                        keepMounted
+                        open={Boolean(viewMenuAnchor)}
+                        onClose={handleCloseView}
+                    >
+                        <UMenuItem onClick={handleSelectView.bind(this,"0")}>Category view</UMenuItem>
+                        <UMenuItem onClick={handleSelectView.bind(this,"1")}>Tree view</UMenuItem>
+                        <UMenuItem onClick={handleSelectView.bind(this,"-1")}>List view</UMenuItem>
                     </UMenu>
                 </Grid>
                 <Grid item xs={6}>
@@ -357,6 +395,28 @@ export default function ContentElements(props) {
                     );
                 })
             }
+            <TablePagination
+                component="nav"
+                rowsPerPageOptions={[5, 10, 25]}
+                page={page}
+                rowsPerPage={perpage}
+                count={count}
+                onChangePage={(e, p) => {
+                    var c = searchData;
+                    c["offset"] = p * perpage;
+                    setSearchData(c);
+                    setDataChange(datachange + 1);
+                    setPage(p);
+                    console.log(p);
+                }}
+                onChangeRowsPerPage = {e => {
+                    setPerPage(e.target.value)
+                    var c = searchData;
+                    c["limit"] = e.target.value;
+                    setSearchData(c);
+                    setDataChange(datachange + 1);
+                }}
+            />
         </div>
     );
 }
