@@ -16,7 +16,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Form from './Form.js';
 import FormSearch from './FormSearch.js';
-import AlertDialogSlide from './AlertDialogSlide.js';
+import AlertDialogSlide from '../components/AlertDialogSlide.js';
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import UMenu from '@material-ui/core/Menu';
@@ -226,7 +226,12 @@ export default function Users(props) {
 
     return (
         <div>
-            <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
+            <AlertDialogSlide
+                open={deleteopen}
+                handleDeleteAbort={handleDeleteAbort}
+                handleDelete={handleDelete}
+                msg="Confirm the inevitable deletion of the user?"
+            />
             <Paper className={classes.root}>
               <div className={classes.flex}>
                   <IconButton

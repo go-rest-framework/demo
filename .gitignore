@@ -4,3 +4,4 @@ node_modules
 main.go
 gorestdev
 docker/database/
+dist/uploads/

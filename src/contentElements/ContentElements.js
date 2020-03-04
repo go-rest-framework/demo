@@ -14,7 +14,7 @@ import DirectionsIcon from '@material-ui/icons/Directions';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Form from './Form.js';
-import AlertDialogSlide from './AlertDialogSlide.js';
+import AlertDialogSlide from '../components/AlertDialogSlide.js';
 import UMenu from '@material-ui/core/Menu';
 import UMenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
@@ -25,6 +25,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import MyUploader from '../components/uploader/Uploader.js';
 
 const useStyles = makeStyles({
     root: {
@@ -300,6 +301,14 @@ export default function ContentElements(props) {
 
     return (
         <div>
+            <MyUploader
+                title="Testing documents"
+                hint=""
+                token={props.app.state.userdata.token}
+                group="test"
+                maxSize={500}
+                extensions={["jpg", "jpeg"]}
+            />
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
                 <div className={classes.flex}>
