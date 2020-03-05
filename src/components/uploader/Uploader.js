@@ -14,6 +14,8 @@ import CachedIcon from '@material-ui/icons/Cached';
 import AlertDialogSlide from '../AlertDialogSlide.js';
 import Dialog from '@material-ui/core/Dialog';
 import UpdateForm from './UpdateForm.js';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles({
     root: {
@@ -49,6 +51,10 @@ const useStyles = makeStyles({
         flex: 1,
         padding: '1em',
     },
+    hidden: {
+        display: 'none',
+    },
+    tooltip: {},
 });
 
 export default function ContentElements(props) {
@@ -61,18 +67,29 @@ export default function ContentElements(props) {
     const [deleteitem, setDeleteItem] = React.useState(0);
 
     const [openUpdateDialog, setOpenUpdateDialog] = React.useState(false);
-    const [updatedItem, setUpdatedItem] = React.useState(0);
+    const [updatedItemId, setUpdatedItemId] = React.useState(0);
+    const [updatedItemTitle, setUpdatedItemTitle] = React.useState('');
+    const [updatedItemDescription, setUpdatedItemDescription] = React.useState('');
 
+    function isImg(ext) {
+        var elist = [".jpeg", ".png"];
+        if (elist.indexOf(ext) == 1) {
+            return true;
+        }
+        return false;
+    }
 
-    function handleClickEdit(id) {
+    function handleClickEdit(id, title, description) {
         setOpenUpdateDialog(true);
-        setUpdatedItem(id);
+        setUpdatedItemId(id);
+        setUpdatedItemTitle(title);
+        setUpdatedItemDescription(description);
     }
 
     function handleCloseUpdateDialog() {
         setOpenUpdateDialog(false);
-        //setDeleteOpen(true);
-        //setDeleteItem(id);
+        setUpdatedItemId(0);
+        setDataChange(datachange + 1);
     }
 
     function handleDownload(src) {
@@ -153,6 +170,16 @@ export default function ContentElements(props) {
         const data = new FormData()
         data.append('file', event.target.files[0])
         console.log(event.target.files[0]);
+
+        if (event.target.files[0].size > props.maxSize) {
+            alert('Wrong size!!');
+            return false;
+        }
+
+        if (props.extensions.indexOf(event.target.files[0].type) < 0) {
+            alert('Wrong filetype!!');
+            return false;
+        }
 
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function(event) {
@@ -276,8 +303,14 @@ export default function ContentElements(props) {
                 msg="Confirm the inevitable deletion of the document?"
             />
             <UpdateForm
+                token={props.token}
+                id={updatedItemId}
+                title={updatedItemTitle}
+                description={updatedItemDescription}
                 open={openUpdateDialog}
                 handleClose={handleCloseUpdateDialog}
+                setUpdatedItemTitle={setUpdatedItemTitle}
+                setUpdatedItemDescription={setUpdatedItemDescription}
             />
             <Grid container spacing={3}>
                 <Grid item xs={9}>
@@ -314,14 +347,35 @@ export default function ContentElements(props) {
                                 <div
                                     className={classes.ava}
                                     style={{
-                                        'background-image':'url(\''+data[index].file.src+'\')',
-                                        'background-size': 'contain',
-                                        'width':'50px',
+                                        width:'50px',
+                                        borderRight: '1px solid lightgrey',
+                                        textAlign: 'center',
+                                        lineHeight: '3',
+                                        fontWeight: 'bold',
+                                        background: 'lightgrey',
+                                        backgroundSize: 'contain',
+                                        backgroundImage:'url(\''+data[index].file.src+'\')',
+                                        color: '#808080',
                                     }}
-                                ></div>
-                                <div className={classes.name}>
-                                    {data[index].file.name}
+                                >
+                                    {(isImg(data[index].file.ext)) ? '' : data[index].file.ext}
                                 </div>
+                                <div className={classes.name}>
+                                    {(data[index].title != '') ? data[index].title : data[index].file.name}
+                                </div>
+                                <Tooltip
+                                    className={(data[index].description != '') ? classes.tooltip : classes.hidden}
+                                    title={data[index].description}
+                                    aria-label={data[index].description}
+                                    placement="left-start" >
+                                    <IconButton
+                                        className={classes.iconButton}
+                                        aria-label="Info"
+                                        //onClick={handleDownload.bind(this,data[index].file.src)}
+                                    >
+                                        <InfoOutlinedIcon />
+                                    </IconButton>
+                                </Tooltip>
                                 <IconButton
                                     className={classes.iconButton}
                                     aria-label="Edit"
@@ -345,7 +399,7 @@ export default function ContentElements(props) {
                                 <IconButton
                                     className={classes.iconButton}
                                     aria-label="Edit"
-                                    onClick={handleClickEdit.bind(this,data[index].ID)}
+                                    onClick={handleClickEdit.bind(this,data[index].ID,data[index].title,data[index].description)}
                                 >
                                     <EditIcon />
                                 </IconButton>

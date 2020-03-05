@@ -306,8 +306,8 @@ export default function ContentElements(props) {
                 hint=""
                 token={props.app.state.userdata.token}
                 group="test"
-                maxSize={500}
-                extensions={["jpg", "jpeg"]}
+                maxSize={500000}
+                extensions={["image/jpg", "image/jpeg", "image/png"]}
             />
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
