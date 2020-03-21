@@ -148,6 +148,7 @@ export default function Form(props) {
                             <MenuItem value={"blocked"}>Blocked</MenuItem>
                         </Select>
                     </FormControl>
+                    {/*
                     <FormControl fullWidth>
                         <InputLabel
                             htmlFor="kind-helper"
@@ -164,6 +165,7 @@ export default function Form(props) {
                             <MenuItem value={"blocked"}>Blocked</MenuItem>
                         </Select>
                     </FormControl>
+                    */}
                     <FormControl fullWidth>
                         <InputLabel
                             htmlFor="user-helper"

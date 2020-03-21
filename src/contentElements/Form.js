@@ -35,6 +35,8 @@ import EntityEditor from '../components/editor/demo/Entity.js';
 import LinkEditor from '../components/editor/demo/Link.js';
 import PlainTextEditor from '../components/editor/demo/PlainText.js';
 import RichEditor from '../components/editor/demo/Rich.js';
+import MyUploader from '../components/uploader/Uploader.js';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -90,7 +92,7 @@ function enhancedReducer(state, updateArg) {
 
 const initialState = {
     urld: '',
-    parent: 1,
+    parent: 0,
     title: '',
     description: '',
     content: '',
@@ -106,6 +108,8 @@ export default function Form(props) {
     const [formdata, setFormdata] = React.useReducer(enhancedReducer, initialState);
 
     const [formdataerrs, setFormdataerrs] = React.useReducer(enhancedReducer, initialState);
+
+    const [parentsList, setParentList] = React.useState([]);
 
     const handleChange = React.useCallback(({
         target: {
@@ -186,6 +190,32 @@ export default function Form(props) {
                 alert(error.message); //=> String
             });
         }
+        fetch('/api/parents', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                //"Authorization": "Bearer " + props.token
+            },
+            credentials: "same-origin"
+        }).then(function(response) {
+            if (response.status === 200) {
+                response.json().then(function(res) {
+                    if (res.errors != null) {
+                        console.log(res.errors);
+                    } else {
+                        console.log(res.data);
+                        setParentList(res.data);
+                    }
+                });
+            } else if (response.status === 401) {
+                sessionStorage.clear();
+                location.reload();
+            } else {
+                alert(response.text());
+            }
+        }, function(error) {
+            alert(error.message); //=> String
+        });
     }, [props.itemid]);
 
 
@@ -346,21 +376,31 @@ export default function Form(props) {
                                 label="Urld"
                                 id="urld"
                             />
-                            <FormControl fullWidth>
-                                <InputLabel htmlFor="parent-helper">Parent</InputLabel>
-                                <Select
-                                    value={formdata.parent}
-                                    onChange={handleChange}
-                                    error={(formdataerrs.parent == '') ? false : true}
-                                    input={<Input name="parent" id="parent-helper" />}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    <MenuItem value={0}>Root</MenuItem>
-                                </Select>
-                                <FormHelperText>Some important helper text</FormHelperText>
-                            </FormControl>
+                            <Autocomplete
+                                onChange={(event, value) => {
+                                    setFormdata({
+                                        ["parent"]: value.Id
+                                    });
+                                }}
+                                id="combo-box-demo"
+                                options={parentsList}
+                                getOptionLabel={option => option.Name}
+                                //renderOption={option => option.id}
+                                //style={{ width: 300 }}
+                                renderInput={
+                                    params => <TextField {...params}
+                                        required
+                                        name="parent"
+                                        id="parent-helper"
+                                        onChange={handleChange}
+                                        value={formdata.parent}
+                                        error={(formdataerrs.parent == '') ? false : true}
+                                        margin="normal"
+                                        label="Parent"
+                                        variant="outlined"
+                                    />
+                                }
+                            />
                             <TextField
                                 value={formdata.title}
                                 onChange={handleChange}
@@ -445,6 +485,16 @@ export default function Form(props) {
                         </Grid>
                         <Grid item xs={6}>
                             <MyEditor setFormdata={setFormdata} />
+                            {
+                            /*<MyUploader
+                                title="Testing documents"
+                                hint=""
+                                token={props.token}
+                                group="test"
+                                maxSize={500000}
+                                extensions={["image/jpg", "image/jpeg", "image/png"]}
+                            />*/
+                            }
                         </Grid>
                     </Grid>
                 </form>

@@ -25,7 +25,6 @@ import TablePagination from "@material-ui/core/TablePagination";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import MyUploader from '../components/uploader/Uploader.js';
 
 const useStyles = makeStyles({
     root: {
@@ -56,6 +55,11 @@ const useStyles = makeStyles({
         fontSize: '1.2em',
         lineHeight: '2.5',
         flex: 1,
+    },
+    itemstring: {
+        fontSize: '1.2em',
+        lineHeight: '2.5',
+        paddingRight: '1em',
     },
     hide: {
         display: 'none',
@@ -88,22 +92,21 @@ function Item(props) {
     return (
         <div>
             <Paper className={classes.items} style={{marginLeft:props.lvl+'em'}}>
-                <div>
+                <div className={classes.itemstring}>
                     {data[index].ID}
                 </div>
                 <div className={classes.name}>
                     {data[index].title}
                 </div>
-                <div className={classes.name}>
+                <div className={classes.itemstring}>
                     {data[index].urld}
                 </div>
-                <div>
-                    {data[index].parent}
-                </div>
-                <div>
+                {/*
+                <div className={classes.itemstring}>
                     {data[index].kind}
                 </div>
-                <div>
+                */}
+                <div className={classes.itemstring}>
                     {data[index].status}
                 </div>
                 <IconButton className={classes.iconButton} aria-label="Edit" onClick={props.handleClickEdit.bind(this,data[index].ID)}>
@@ -301,14 +304,6 @@ export default function ContentElements(props) {
 
     return (
         <div>
-            <MyUploader
-                title="Testing documents"
-                hint=""
-                token={props.app.state.userdata.token}
-                group="test"
-                maxSize={500000}
-                extensions={["image/jpg", "image/jpeg", "image/png"]}
-            />
             <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
             <Paper className={classes.root}>
                 <div className={classes.flex}>

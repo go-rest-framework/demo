@@ -321,7 +321,7 @@ export default function ContentElements(props) {
                         *
                     </div>
                     <div className={classes.hint}>
-                        Max size {props.maxSize} byte and accept extensions {JSON.stringify(props.extensions)}
+                        Max size {props.maxSize} byte and accept file types {JSON.stringify(props.extensions)}
                     </div>
                 </Grid>
                 <Grid item className={classes.buttonsWrap} xs={3}>
