@@ -1,7 +1,3 @@
-//TODO add after base
-//https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/media/media.html
-//https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/link/link.html
-//https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/convertFromHTML/convert.html
 import React from 'react';
 import {
     makeStyles
@@ -15,106 +11,105 @@ import {
     convertToRaw,
     convertFromRaw
 } from 'draft-js';
+import Paper from '@material-ui/core/Paper';
 import BlockStyleControls from './BlockSC.js';
 import InlineStyleControls from './InlineSC.js';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 
-const useStyles = makeStyles(theme => ({
-    root: {
+const useStyles = makeStyles({
+    maininput: {
+        border: '1px solid #c7c7c7',
+        borderRadius: '5px',
         padding: '1em',
+        margin: '1em 0em',
+        minHeight: '20em',
     },
-}));
-
-export default class MyEditor extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            editorState: EditorState.createEmpty(),
-            showURLInput: false,
-            url: '',
-            urlType: '',
-        };
-        this.focus = () => this.refs.editor.focus();
-        this.onChange = (editorState) => {
-            this.setState({
-                editorState
-            });
-            const content = this.state.editorState.getCurrentContent();
-            console.log(JSON.stringify(convertToRaw(content)));
-            props.setFormdata({
-                content: JSON.stringify(convertToRaw(content)),
-            });
-        }
-        this.onURLChange = (e) => this.setState({
-            urlValue: e.target.value
-        });
-
-        //TODO data restore realisation
-        //var testcontent = `{"blocks":[{"key":"943rm","text":"fffffffffff","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}`;
-        //this.state.editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(testcontent)));
-
-        this.handleKeyCommand = this._handleKeyCommand.bind(this);
-        this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
-        this.toggleBlockType = this._toggleBlockType.bind(this);
-        this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
-
-        this.addAudio = this._addAudio.bind(this);
-        this.addImage = this._addImage.bind(this);
-        this.addVideo = this._addVideo.bind(this);
-        this.confirmMedia = this._confirmMedia.bind(this);
-        this.onURLInputKeyDown = this._onURLInputKeyDown.bind(this);
+    media: {
+        width: '100%',
+        // Fix an issue with Firefox rendering video controls
+        // with 'pre-wrap' white-space
+        whiteSpace: 'initial'
     }
-    _handleKeyCommand(command, editorState) {
-        const newState = RichUtils.handleKeyCommand(editorState, command);
-        if (newState) {
-            this.onChange(newState);
-            return true;
-        }
-        return false;
-    }
-    _mapKeyToEditorCommand(e) {
-        if (e.keyCode === 9 /* TAB */ ) {
-            const newEditorState = RichUtils.onTab(
-                e,
-                this.state.editorState,
-                4, /* maxDepth */
-            );
-            if (newEditorState !== this.state.editorState) {
-                this.onChange(newEditorState);
-            }
-            return;
-        }
-        return getDefaultKeyBinding(e);
-    }
-    _toggleBlockType(blockType) {
-        this.onChange(
+});
+
+export default function MyEditor(props) {
+    const classes = useStyles();
+    const [editorState, setEditorState] = React.useState(
+        EditorState.createEmpty(),
+    );
+
+    const [showURLInput, setShowURLInput] = React.useState(false);
+    const [url, setUrl] = React.useState('');
+    const [urlType, setUrlType] = React.useState('');
+
+    const textInput = React.createRef();
+    const urlInput = React.createRef();
+
+    const focus = () => textInput.current.focus();
+    const urlfocus = () => urlInput.current.focus();
+
+    const onChange = (editorState) => {
+        setEditorState(editorState);
+        const content = editorState.getCurrentContent();
+        console.log(JSON.stringify(convertToRaw(content)));
+        //props.setFormdata({
+        //content: JSON.stringify(convertToRaw(content)),
+        //});
+    };
+
+    const toggleBlockType = (blockType) => {
+        onChange(
             RichUtils.toggleBlockType(
-                this.state.editorState,
+                editorState,
                 blockType
             )
         );
-    }
-    _toggleInlineStyle(inlineStyle) {
-        this.onChange(
+    };
+
+    const toggleInlineStyle = (inlineStyle) => {
+        onChange(
             RichUtils.toggleInlineStyle(
-                this.state.editorState,
+                editorState,
                 inlineStyle
             )
         );
-    }
-    _confirmMedia(e) {
+    };
+
+    const promptForMedia = (type) => {
+        setShowURLInput(true);
+        setUrl('');
+        setUrlType(type);
+        //urlfocus();
+    };
+
+    const addAudio = (e) => {
         e.preventDefault();
-        const {
-            editorState,
-            urlValue,
-            urlType
-        } = this.state;
+        promptForMedia('audio');
+    };
+    const addImage = (e) => {
+        e.preventDefault();
+        promptForMedia('image');
+    };
+    const addVideo = (e) => {
+        e.preventDefault();
+        promptForMedia('video');
+    };
+
+    const onURLChange = (e) => setUrl(e.target.value);
+
+    const onURLInputKeyDown = (e) => {
+        if (e.which === 13) {
+            confirmMedia(e);
+        }
+    }
+
+    const confirmMedia = (e) => {
+        e.preventDefault();
         const contentState = editorState.getCurrentContent();
         const contentStateWithEntity = contentState.createEntity(
             urlType,
             'IMMUTABLE', {
-                src: urlValue
+                src: url
             }
         );
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -123,236 +118,126 @@ export default class MyEditor extends React.Component {
                 currentContent: contentStateWithEntity
             }
         );
-        console.log(urlValue);
-        this.setState({
-            editorState: AtomicBlockUtils.insertAtomicBlock(
+        console.log(url);
+        console.log(newEditorState);
+        console.log(entityKey);
+        console.log(AtomicBlockUtils.insertAtomicBlock(
+            newEditorState,
+            entityKey,
+            ' '
+        ));
+        onChange(
+            AtomicBlockUtils.insertAtomicBlock(
                 newEditorState,
                 entityKey,
                 ' '
-            ),
-            showURLInput: false,
-            urlValue: '',
-        }, () => {
-            setTimeout(() => this.focus(), 0);
-        });
-    }
-    _onURLInputKeyDown(e) {
-        if (e.which === 13) {
-            this._confirmMedia(e);
-        }
-    }
-    _promptForMedia(type) {
-        this.setState({
-            showURLInput: true,
-            urlValue: '',
-            urlType: type,
-        }, () => {
-            setTimeout(() => this.refs.url.focus(), 0);
-        });
-    }
-    _addAudio(e) {
-        e.preventDefault();
-        this._promptForMedia('audio');
-    }
-    _addImage(e) {
-        e.preventDefault();
-        this._promptForMedia('image');
-    }
-    _addVideo(e) {
-        e.preventDefault();
-        this._promptForMedia('video');
-    }
-
-    render() {
-        let urlInput;
-        if (this.state.showURLInput) {
-            urlInput =
-                <div style={styles.urlInputContainer}>
-                    <input
-                        onChange={this.onURLChange}
-                        ref="url"
-                        style={styles.urlInput}
-                        type="text"
-                        value={this.state.urlValue}
-                        onKeyDown={this.onURLInputKeyDown}
-                    />
-                    <Button onMouseDown={this.confirmMedia}>
-                        Confirm
-                    </Button>
-                </div>;
-        }
-
-        const {
-            editorState
-        } = this.state;
-        // If the user changes block type before entering any text, we can
-        // either style the placeholder or hide it. Let's just hide it now.
-        let className = 'RichEditor-editor';
-        var contentState = editorState.getCurrentContent();
-        if (!contentState.hasText()) {
-            if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-                className += ' RichEditor-hidePlaceholder';
-            }
-        }
-        return (
-            <div className="RichEditor-root">
-                <Paper>
-                    <BlockStyleControls
-                        editorState={editorState}
-                        onToggle={this.toggleBlockType}
-                    />
-                    <InlineStyleControls
-                        editorState={editorState}
-                        onToggle={this.toggleInlineStyle}
-                    />
-                    <div>
-                        <Button
-                            size="small"
-                            onMouseDown={this.addAudio}
-                        >
-                            Add Audio
-                        </Button>
-                        <Button
-                            size="small"
-                            onMouseDown={this.addImage}
-                        >
-                            Add Image
-                        </Button>
-                        <Button
-                            size="small"
-                            onMouseDown={this.addVideo}
-                        >
-                            Add Video
-                        </Button>
-                    </div>
-                </Paper>
-                {urlInput}
-                <div style={styles.maininput} onClick={this.focus}>
-                    <Editor
-                        blockRendererFn={mediaBlockRenderer}
-                        blockStyleFn={getBlockStyle}
-                        customStyleMap={styleMap}
-                        editorState={editorState}
-                        handleKeyCommand={this.handleKeyCommand}
-                        keyBindingFn={this.mapKeyToEditorCommand}
-                        onChange={this.onChange}
-                        onKeyUp={this.onKeyUp}
-                        ref="editor"
-                        spellCheck={true}
-                    />
-                </div>
-            </div>
+            )
         );
+        setShowURLInput(false);
+        setUrl('');
+        //focus();
     }
-}
 
-function mediaBlockRenderer(block) {
-    if (block.getType() === 'atomic') {
-        return {
-            component: Media,
-            editable: false,
-        };
+    let urlForm;
+    if (showURLInput) {
+        urlForm =
+            <div className={classes.urlInputContainer}>
+                <input
+                    onChange={onURLChange}
+                    className={classes.urlInput}
+                    type="text"
+                    value={url}
+                    onKeyDown={onURLInputKeyDown}
+                    ref={urlInput}
+                />
+                <Button onMouseDown={confirmMedia}>
+                    Confirm
+                </Button>
+            </div>;
     }
-    return null;
-}
-const Audio = (props) => {
-    return <audio controls src={props.src} style={styles.media} />;
-};
-const Image = (props) => {
-    return <img src={props.src} style={styles.media} />;
-};
-const Video = (props) => {
-    return <video controls src={props.src} style={styles.media} />;
-};
-const Media = (props) => {
-    const entity = props.contentState.getEntity(
-        props.block.getEntityAt(0)
+
+    const mediaBlockRenderer = (block) => {
+        if (block.getType() === 'atomic') {
+            return {
+                component: Media,
+                editable: false,
+            };
+        }
+        return null;
+    }
+
+    const Media = (props) => {
+        const entity = props.contentState.getEntity(
+            props.block.getEntityAt(0)
+        );
+        const {
+            src
+        } = entity.getData();
+        const type = entity.getType();
+        console.log(type);
+        let media;
+        if (type === 'audio') {
+            media = <Audio src={src} />;
+        } else if (type === 'image') {
+            media = <Image src={src} />;
+        } else if (type === 'video') {
+            media = <Video src={src} />;
+        }
+        return media;
+    };
+
+    const Audio = (props) => {
+        return <audio controls src={props.src} className={classes.media} />;
+    };
+    const Image = (props) => {
+        return <img src={props.src} className={classes.media} />;
+    };
+    const Video = (props) => {
+        return <video controls src={props.src} className={classes.media} />;
+    };
+
+
+    return (
+        <div>
+            <Paper>
+                <BlockStyleControls
+                    editorState={editorState}
+                    onToggle={toggleBlockType}
+                />
+                <InlineStyleControls
+                    editorState={editorState}
+                    onToggle={toggleInlineStyle}
+                />
+                <div>
+                    <Button
+                        size="small"
+                        onMouseDown={addAudio}
+                    >
+                        Add Audio
+                    </Button>
+                    <Button
+                        size="small"
+                        onMouseDown={addImage}
+                    >
+                        Add Image
+                    </Button>
+                    <Button
+                        size="small"
+                        onMouseDown={addVideo}
+                    >
+                        Add Video
+                    </Button>
+                </div>
+            </Paper>
+            {urlForm}
+            <div className={classes.maininput} onClick={focus}>
+                <Editor
+                    blockRendererFn={mediaBlockRenderer}
+                    editorState={editorState}
+                    onChange={setEditorState}
+                    ref={textInput}
+                />
+            </div>
+        </div>
     );
-    const {
-        src
-    } = entity.getData();
-    const type = entity.getType();
-    console.log(type);
-    let media;
-    if (type === 'audio') {
-        media = <Audio src={src} />;
-    } else if (type === 'image') {
-        media = <Image src={src} />;
-    } else if (type === 'video') {
-        media = <Video src={src} />;
-    }
-    return media;
-};
-
-// Custom overrides for "code" style.
-const styleMap = {
-    CODE: {
-        backgroundColor: 'rgba(0, 0, 0, 0.05)',
-        fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-        fontSize: 16,
-        padding: 2,
-    },
-    LEFT: {
-        textAlign: 'left',
-        display: 'block',
-    },
-    CENTER: {
-        textAlign: 'center',
-        display: 'block',
-    },
-    RIGHT: {
-        textAlign: 'right',
-        display: 'block',
-    },
-};
-
-function getBlockStyle(block) {
-    switch (block.getType()) {
-        case 'blockquote':
-            return 'RichEditor-blockquote';
-        default:
-            return null;
-    }
 }
-
-const styles = {
-    maininput: {
-        border: '1px solid #c7c7c7',
-        borderRadius: '5px',
-        padding: '1em',
-        margin: '1em 0em',
-        minHeight: '20em',
-    },
-    root: {
-        fontFamily: '\'Georgia\', serif',
-        padding: 20,
-        width: 600,
-    },
-    buttons: {
-        marginBottom: 10,
-    },
-    urlInputContainer: {
-        marginBottom: 10,
-    },
-    urlInput: {
-        fontFamily: '\'Georgia\', serif',
-        marginRight: 10,
-        padding: 3,
-    },
-    editor: {
-        border: '1px solid #ccc',
-        cursor: 'text',
-        minHeight: 80,
-        padding: 10,
-    },
-    button: {
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    media: {
-        width: '100%',
-        // Fix an issue with Firefox rendering video controls
-        // with 'pre-wrap' white-space
-        whiteSpace: 'initial'
-    },
-};

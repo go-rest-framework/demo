@@ -222,6 +222,7 @@ export default function Form(props) {
             if (response.status === 200) {
                 response.json().then(function(res) {
                     if (res.errors != null) {
+                        clearErrorData();
                         for (var one of res.errors) {
                             console.log(one);
                             setFormdataerrs({

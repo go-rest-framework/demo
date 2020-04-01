@@ -25,6 +25,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles({
     root: {
@@ -159,6 +160,8 @@ export default function ContentElements(props) {
     const [viewMenuAnchor, setViewMenuAnchor] = React.useState(null);
     const [viewstring, setViewSting] = React.useState(null);
 
+    const [loaded, setLoaded] = React.useState(0);
+
     function encodeQueryData(data) {
         const ret = [];
         ret.push('?');
@@ -187,6 +190,7 @@ export default function ContentElements(props) {
                         console.log(res.errors);
                     } else {
                         console.log(res.data);
+                        setLoaded(1);
                         setData(res.data);
                         setCount(res.count);
                     }
@@ -386,18 +390,26 @@ export default function ContentElements(props) {
                 </Grid>
             </Grid>
             {
-                Object.keys(data).map((index) => {
-                    return (
-                        <Item
-                            data={data}
-                            index={index}
-                            key={'elementID_'+data[index].ID}
-                            handleClickEdit={handleClickEdit}
-                            handleDeleteAsk={handleDeleteAsk}
-                            lvl={0}
-                        />
-                    );
-                })
+                (loaded == 0)
+                ?
+                    <CircularProgress color="inherit" size={20} />
+                :
+                    (data.length > 0)
+                    ?
+                        Object.keys(data).map((index) => {
+                            return (
+                                <Item
+                                    data={data}
+                                    index={index}
+                                    key={'elementID_'+data[index].ID}
+                                    handleClickEdit={handleClickEdit}
+                                    handleDeleteAsk={handleDeleteAsk}
+                                    lvl={0}
+                                />
+                            );
+                        })
+                    :
+                        <div>No result found</div>
             }
             <TablePagination
                 component="nav"

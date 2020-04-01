@@ -36,7 +36,7 @@ import LinkEditor from '../components/editor/demo/Link.js';
 import PlainTextEditor from '../components/editor/demo/PlainText.js';
 import RichEditor from '../components/editor/demo/Rich.js';
 import MyUploader from '../components/uploader/Uploader.js';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import AutocompleteSelect from './AutocompleteSelect.js'
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -52,7 +52,12 @@ const useStyles = makeStyles(theme => ({
     },
     form: {
         padding: '2em',
-    }
+    },
+    divider: {
+        width: 0,
+        height: '1em',
+        margin: 4,
+    },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -108,8 +113,6 @@ export default function Form(props) {
     const [formdata, setFormdata] = React.useReducer(enhancedReducer, initialState);
 
     const [formdataerrs, setFormdataerrs] = React.useReducer(enhancedReducer, initialState);
-
-    const [parentsList, setParentList] = React.useState([]);
 
     const handleChange = React.useCallback(({
         target: {
@@ -190,32 +193,6 @@ export default function Form(props) {
                 alert(error.message); //=> String
             });
         }
-        fetch('/api/parents', {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                //"Authorization": "Bearer " + props.token
-            },
-            credentials: "same-origin"
-        }).then(function(response) {
-            if (response.status === 200) {
-                response.json().then(function(res) {
-                    if (res.errors != null) {
-                        console.log(res.errors);
-                    } else {
-                        console.log(res.data);
-                        setParentList(res.data);
-                    }
-                });
-            } else if (response.status === 401) {
-                sessionStorage.clear();
-                location.reload();
-            } else {
-                alert(response.text());
-            }
-        }, function(error) {
-            alert(error.message); //=> String
-        });
     }, [props.itemid]);
 
 
@@ -240,6 +217,7 @@ export default function Form(props) {
             if (response.status === 200) {
                 response.json().then(function(res) {
                     if (res.errors != null) {
+                        clearErrorData();
                         for (var one of res.errors) {
                             console.log(one);
                             setFormdataerrs({
@@ -376,31 +354,6 @@ export default function Form(props) {
                                 label="Urld"
                                 id="urld"
                             />
-                            <Autocomplete
-                                onChange={(event, value) => {
-                                    setFormdata({
-                                        ["parent"]: value.Id
-                                    });
-                                }}
-                                id="combo-box-demo"
-                                options={parentsList}
-                                getOptionLabel={option => option.Name}
-                                //renderOption={option => option.id}
-                                //style={{ width: 300 }}
-                                renderInput={
-                                    params => <TextField {...params}
-                                        required
-                                        name="parent"
-                                        id="parent-helper"
-                                        onChange={handleChange}
-                                        value={formdata.parent}
-                                        error={(formdataerrs.parent == '') ? false : true}
-                                        margin="normal"
-                                        label="Parent"
-                                        variant="outlined"
-                                    />
-                                }
-                            />
                             <TextField
                                 value={formdata.title}
                                 onChange={handleChange}
@@ -414,6 +367,13 @@ export default function Form(props) {
                                 label="Title"
                                 name="title"
                             />
+                            <AutocompleteSelect
+                                url="/api/parents"
+                                setFormdata={setFormdata}
+                                formdata={formdata}
+                                formdataerrs={formdataerrs}
+                                value={formdata.parent}
+                            />
                             <TextField
                                 value={formdata.description}
                                 onChange={handleChange}
@@ -421,7 +381,6 @@ export default function Form(props) {
                                 helperText={formdataerrs.description}
                                 variant="outlined"
                                 margin="normal"
-                                required
                                 fullWidth
                                 id="description"
                                 label="Description"
@@ -434,7 +393,6 @@ export default function Form(props) {
                                 helperText={formdataerrs.meta_title}
                                 variant="outlined"
                                 margin="normal"
-                                required
                                 fullWidth
                                 id="meta_title"
                                 label="Meta title"
@@ -447,7 +405,6 @@ export default function Form(props) {
                                 helperText={formdataerrs.meta_descr}
                                 variant="outlined"
                                 margin="normal"
-                                required
                                 fullWidth
                                 id="meta_descr"
                                 label="Meta description"
@@ -460,14 +417,19 @@ export default function Form(props) {
                                 helperText={formdataerrs.tags}
                                 variant="outlined"
                                 margin="normal"
-                                required
                                 fullWidth
                                 id="tags"
                                 label="Key words"
                                 name="tags"
                             />
+                        </Grid>
+                        <Grid item xs={6}>
                             <FormControl fullWidth>
-                                <InputLabel htmlFor="status-helper">Status</InputLabel>
+                                <InputLabel
+                                    htmlFor="status-helper"
+                                >
+                                    Status
+                                </InputLabel>
                                 <Select
                                     value={formdata.status}
                                     onChange={handleChange}
@@ -477,14 +439,18 @@ export default function Form(props) {
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    <MenuItem value={10}>Draft</MenuItem>
-                                    <MenuItem value={20}>Public</MenuItem>
+                                    <MenuItem value="draft">Draft</MenuItem>
+                                    <MenuItem value="active">Active</MenuItem>
                                 </Select>
-                                <FormHelperText>Some important helper text</FormHelperText>
+                                <FormHelperText style={{color:"red"}}>
+                                    {formdataerrs.status}
+                                </FormHelperText>
                             </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <MyEditor setFormdata={setFormdata} />
+                            <Divider className={classes.divider} />
+                            <MyEditor
+                                setFormdata={setFormdata}
+                                value={formdata.content}
+                            />
                             {
                             /*<MyUploader
                                 title="Testing documents"
