@@ -15,8 +15,9 @@ import {
 import Paper from '@material-ui/core/Paper';
 import BlockStyleControls from './BlockSC.js';
 import InlineStyleControls from './InlineSC.js';
+import LinkForm from './LinkForm.js';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 const useStyles = makeStyles({
     maininput: {
@@ -47,11 +48,6 @@ export default function MyEditor(props) {
     );
 
     const [showURLInput, setShowURLInput] = React.useState(false);
-    const [url, setUrl] = React.useState('');
-    const [urlType, setUrlType] = React.useState('');
-
-    const [loadershow, setLoaderShow] = React.useState(false);
-    const [loaded, setLoaded] = React.useState(0);
 
     const textInput = React.createRef();
     const urlInput = React.createRef();
@@ -113,9 +109,17 @@ export default function MyEditor(props) {
         //urlfocus();
     };
 
-    const uploadFile = (e) => {
+    const addAudio = (e) => {
         e.preventDefault();
-        console.log('slfsdlfsd');
+        promptForMedia('audio');
+    };
+    const addImage = (e) => {
+        e.preventDefault();
+        promptForMedia('image');
+    };
+    const addVideo = (e) => {
+        e.preventDefault();
+        promptForMedia('video');
     };
 
     const onFileUploadHandler = (e) => {
@@ -147,48 +151,34 @@ export default function MyEditor(props) {
             console.log(this);
             if (this.status == 200) {
                 var data = JSON.parse(xhr.responseText);
-                console.log(data);
                 if (data.errors != null) {
                     for (var one of data.errors) {
                         console.log(one);
                     }
                 } else {
-                    console.log(data.data);
-                    var adata = {
-                        group: props.group,
-                        fileID: data.data.ID,
-                        title: data.data.name,
-                        description: "",
-                        isMain: 0,
-                        index: 0,
-                    };
-                    fetch('/api/attachments', {
-                        method: "POST",
-                        body: JSON.stringify(adata),
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + props.token
-                        },
-                        credentials: "same-origin"
-                    }).then(function(response) {
-                        if (response.status === 200) {
-                            response.json().then(function(res) {
-                                if (res.errors != null) {
-                                    console.log(res.errors);
-                                } else {
-                                    console.log(res.data);
-                                    setDataChange(datachange + 1);
-                                }
-                            });
-                        } else if (response.status === 401) {
-                            sessionStorage.clear();
-                            location.reload();
-                        } else {
-                            alert(response.text());
+
+                    const contentState = editorState.getCurrentContent();
+                    const contentStateWithEntity = contentState.createEntity(
+                        'image',
+                        'IMMUTABLE', {
+                            src: data.data.src
                         }
-                    }, function(error) {
-                        alert(error.message); //=> String
-                    });
+                    );
+                    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+                    const newEditorState = EditorState.set(
+                        editorState, {
+                            currentContent: contentStateWithEntity
+                        }
+                    );
+                    onChange(
+                        AtomicBlockUtils.insertAtomicBlock(
+                            newEditorState,
+                            entityKey,
+                            ' '
+                        )
+                    );
+
+                    console.log(data.data);
                 }
             } else if (this.status == 401) {
                 console.log("status 401");
@@ -203,71 +193,23 @@ export default function MyEditor(props) {
         xhr.send(data);
     };
 
-    const addAudio = (e) => {
-        e.preventDefault();
-        promptForMedia('audio');
-    };
-    const addImage = (e) => {
-        e.preventDefault();
-        promptForMedia('image');
-    };
-    const addVideo = (e) => {
-        e.preventDefault();
-        promptForMedia('video');
-    };
-
-    const onURLChange = (e) => setUrl(e.target.value);
-
-    const onURLInputKeyDown = (e) => {
-        if (e.which === 13) {
-            confirmMedia(e);
-        }
-    }
-
-    const confirmMedia = (e) => {
-        e.preventDefault();
-        const contentState = editorState.getCurrentContent();
-        const contentStateWithEntity = contentState.createEntity(
-            urlType,
-            'IMMUTABLE', {
-                src: url
-            }
-        );
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(
-            editorState, {
-                currentContent: contentStateWithEntity
-            }
-        );
-        onChange(
-            AtomicBlockUtils.insertAtomicBlock(
-                newEditorState,
-                entityKey,
-                ' '
-            )
-        );
-        setShowURLInput(false);
-        setUrl('');
-        //focus();
-    }
-
-    let urlForm;
-    if (showURLInput) {
-        urlForm =
-            <div className={classes.urlInputContainer}>
-                <input
-                    onChange={onURLChange}
-                    className={classes.urlInput}
-                    type="text"
-                    value={url}
-                    onKeyDown={onURLInputKeyDown}
-                    ref={urlInput}
-                />
-                <Button onMouseDown={confirmMedia}>
-                    Confirm
-                </Button>
-            </div>;
-    }
+    //let urlForm;
+    //if (showURLInput) {
+    //urlForm =
+    //<div className={classes.urlInputContainer}>
+    //<input
+    //onChange={onURLChange}
+    //className={classes.urlInput}
+    //type="text"
+    //value={url}
+    //onKeyDown={onURLInputKeyDown}
+    //ref={urlInput}
+    ///>
+    //<Button onMouseDown={confirmMedia}>
+    //Confirm
+    //</Button>
+    //</div>;
+    //}
 
     const mediaBlockRenderer = (block) => {
         if (block.getType() === 'atomic') {
@@ -313,53 +255,26 @@ export default function MyEditor(props) {
     return (
         <div>
             <Paper>
-                <BlockStyleControls
-                    editorState={editorState}
-                    onToggle={toggleBlockType}
-                />
                 <InlineStyleControls
                     editorState={editorState}
                     onToggle={toggleInlineStyle}
                 />
-                <div>
-                    <Button
-                        size="small"
-                        onMouseDown={addAudio}
-                    >
-                        Add Audio
-                    </Button>
-                    <Button
-                        size="small"
-                        onMouseDown={addImage}
-                    >
-                        Add Image
-                    </Button>
-                    <Button
-                        size="small"
-                        onMouseDown={addVideo}
-                    >
-                        Add Video
-                    </Button>
-                    <Button
-                        size="small"
-                        onMouseDown={uploadFile}
-                        component="label"
-                    >
-                        Upload File
-                        <input
-                            type="file"
-                            style={{ display: "none" }}
-                            onChange={onFileUploadHandler}
-                        />
-                    </Button>
-                </div>
+                <BlockStyleControls
+                    editorState={editorState}
+                    onToggle={toggleBlockType}
+                />
+                <Button
+                    component="label"
+                >
+                    <AttachFileIcon />
+                    <input
+                        type="file"
+                        style={{ display: "none" }}
+                        onChange={onFileUploadHandler}
+                    />
+                </Button>
+                <LinkForm />
             </Paper>
-            <LinearProgress
-                variant="determinate"
-                value={loaded}
-                className={(!loadershow) ? classes.lineHidden : classes.line}
-            />
-            {urlForm}
             <div className={classes.maininput} onClick={focus}>
                 <Editor
                     blockRendererFn={mediaBlockRenderer}

@@ -450,6 +450,8 @@ export default function Form(props) {
                             <MyEditor
                                 setFormdata={setFormdata}
                                 value={formdata.content}
+                                token={props.token}
+                                extensions={["image/jpg", "image/jpeg", "image/png"]}
                             />
                             {
                             /*<MyUploader
