@@ -2,8 +2,11 @@ import React from 'react';
 import {
     makeStyles
 } from '@material-ui/core/styles';
+import {
+    EditorState,
+    AtomicBlockUtils,
+} from 'draft-js';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import LinkIcon from '@material-ui/icons/Link';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -26,8 +29,6 @@ export default function AttachForm(props) {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [loadershow, setLoaderShow] = React.useState(false);
-    const [loaded, setLoaded] = React.useState(0);
 
     const [url, setUrl] = React.useState('');
     const [urlType, setUrlType] = React.useState('');
@@ -35,27 +36,27 @@ export default function AttachForm(props) {
 
     const confirmMedia = (e) => {
         e.preventDefault();
-        const contentState = editorState.getCurrentContent();
+        const contentState = props.editorState.getCurrentContent();
         const contentStateWithEntity = contentState.createEntity(
-            urlType,
+            'link',
             'IMMUTABLE', {
                 src: url
             }
         );
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
         const newEditorState = EditorState.set(
-            editorState, {
+            props.editorState, {
                 currentContent: contentStateWithEntity
             }
         );
-        onChange(
+        props.onChange(
             AtomicBlockUtils.insertAtomicBlock(
                 newEditorState,
                 entityKey,
                 ' '
             )
         );
-        setShowURLInput(false);
+        setOpen(false);
         setUrl('');
         //focus();
     }
@@ -114,11 +115,6 @@ export default function AttachForm(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <LinearProgress
-                variant="determinate"
-                value={loaded}
-                className={(!loadershow) ? classes.lineHidden : classes.line}
-            />
         </div>
     );
 }

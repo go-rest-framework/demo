@@ -18,6 +18,7 @@ import InlineStyleControls from './InlineSC.js';
 import LinkForm from './LinkForm.js';
 import Button from '@material-ui/core/Button';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles({
     maininput: {
@@ -41,6 +42,16 @@ const useStyles = makeStyles({
     }
 });
 
+const getFiletype = (mime) => {
+    var strings = mime.split('/');
+
+    if (strings[0] == 'audio' || strings[0] == 'video' || strings[0] == 'image') {
+        return strings[0];
+    }
+
+    return 'link';
+};
+
 export default function MyEditor(props) {
     const classes = useStyles();
     const [editorState, setEditorState] = React.useState(
@@ -54,6 +65,9 @@ export default function MyEditor(props) {
 
     const focus = () => textInput.current.focus();
     const urlfocus = () => urlInput.current.focus();
+
+    const [loadershow, setLoaderShow] = React.useState(false);
+    const [loaded, setLoaded] = React.useState(0);
 
     React.useEffect(() => {
         if (isJson(props.value)) {
@@ -132,6 +146,8 @@ export default function MyEditor(props) {
             return false;
         }
 
+        const addtype = getFiletype(e.target.files[0].type);
+
         if (props.extensions.indexOf(e.target.files[0].type) < 0) {
             alert('Wrong filetype!!');
             return false;
@@ -159,7 +175,7 @@ export default function MyEditor(props) {
 
                     const contentState = editorState.getCurrentContent();
                     const contentStateWithEntity = contentState.createEntity(
-                        'image',
+                        addtype,
                         'IMMUTABLE', {
                             src: data.data.src
                         }
@@ -215,7 +231,7 @@ export default function MyEditor(props) {
         if (block.getType() === 'atomic') {
             return {
                 component: Media,
-                editable: false,
+                editable: true,
             };
         }
         return null;
@@ -237,6 +253,8 @@ export default function MyEditor(props) {
             media = <Image src={src} />;
         } else if (type === 'video') {
             media = <Video src={src} />;
+        } else if (type === 'link') {
+            media = <Link src={src} />;
         }
         return media;
     };
@@ -249,6 +267,9 @@ export default function MyEditor(props) {
     };
     const Video = (props) => {
         return <video controls src={props.src} className={classes.media} />;
+    };
+    const Link = (props) => {
+        return <a href={props.src} className={classes.link}>{props.src}</a>;
     };
 
 
@@ -273,8 +294,16 @@ export default function MyEditor(props) {
                         onChange={onFileUploadHandler}
                     />
                 </Button>
-                <LinkForm />
+                <LinkForm
+                    editorState={editorState}
+                    onChange={onChange}
+                />
             </Paper>
+            <LinearProgress
+                variant="determinate"
+                value={loaded}
+                className={(!loadershow) ? classes.lineHidden : classes.line}
+            />
             <div className={classes.maininput} onClick={focus}>
                 <Editor
                     blockRendererFn={mediaBlockRenderer}

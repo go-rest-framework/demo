@@ -1,36 +1,34 @@
-import React from 'react';
-import {
-    makeStyles
-} from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import MenuIcon from '@material-ui/icons/ArrowDropDown';
-import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import Form from './Form.js';
-import AlertDialogSlide from '../components/AlertDialogSlide.js';
-import UMenu from '@material-ui/core/Menu';
-import UMenuItem from '@material-ui/core/MenuItem';
-import Grid from '@material-ui/core/Grid';
-import Chip from '@material-ui/core/Chip';
-import Collapse from '@material-ui/core/Collapse';
-import FormSearch from './FormSearch.js';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import InputBase from "@material-ui/core/InputBase";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import MenuIcon from "@material-ui/icons/ArrowDropDown";
+import SearchIcon from "@material-ui/icons/Search";
+import DirectionsIcon from "@material-ui/icons/Directions";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import Form from "./Form.js";
+import AlertDialogSlide from "../components/AlertDialogSlide.js";
+import UMenu from "@material-ui/core/Menu";
+import UMenuItem from "@material-ui/core/MenuItem";
+import Grid from "@material-ui/core/Grid";
+import Chip from "@material-ui/core/Chip";
+import Collapse from "@material-ui/core/Collapse";
+import FormSearch from "./FormSearch.js";
 import TablePagination from "@material-ui/core/TablePagination";
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles({
     root: {
-        padding: '2px 4px',
-        alignItems: 'center',
+        padding: "2px 4px",
+        alignItems: "center",
     },
     input: {
         marginLeft: 8,
@@ -41,42 +39,41 @@ const useStyles = makeStyles({
     },
     divider: {
         width: 0,
-        height: '1em',
+        height: "1em",
         margin: 4,
     },
     items: {
-        display: 'flex',
-        padding: '1em',
-        marginBottom: '0.5em',
+        display: "flex",
+        padding: "1em",
+        marginBottom: "0.5em",
     },
     avatar: {
-        margin: '0 1em 0 0',
+        margin: "0 1em 0 0",
     },
     name: {
-        fontSize: '1.2em',
-        lineHeight: '2.5',
+        fontSize: "1.2em",
+        lineHeight: "2.5",
         flex: 1,
     },
     itemstring: {
-        fontSize: '1.2em',
-        lineHeight: '2.5',
-        paddingRight: '1em',
+        fontSize: "1.2em",
+        lineHeight: "2.5",
+        paddingRight: "1em",
     },
     hide: {
-        display: 'none',
+        display: "none",
     },
     flex: {
-        display: 'flex',
+        display: "flex",
     },
     sorttitle: {
-        marginTop: '1.5em',
+        marginTop: "1.5em",
     },
     viewtitle: {
-        marginTop: '1.5em',
-        marginLeft: '1em',
+        marginTop: "1.5em",
+        marginLeft: "1em",
     },
 });
-
 
 //<Divider className={classes.divider} />
 
@@ -86,51 +83,56 @@ function Item(props) {
     let index = props.index;
     let keys = [];
     let elements = null;
-    if (data[index] != undefined && data[index].elements != null && data[index].elements.length > 0) {
+    if (
+        data[index] != undefined &&
+        data[index].elements != null &&
+        data[index].elements.length > 0
+    ) {
         keys = Object.keys(data[index].elements);
         elements = data[index].elements;
     }
     return (
         <div>
-            <Paper className={classes.items} style={{marginLeft:props.lvl+'em'}}>
-                <div className={classes.itemstring}>
-                    {data[index].ID}
-                </div>
-                <div className={classes.name}>
-                    {data[index].title}
-                </div>
-                <div className={classes.itemstring}>
-                    {data[index].urld}
-                </div>
+            <Paper
+                className={classes.items}
+                style={{ marginLeft: props.lvl + "em" }}
+            >
+                <div className={classes.itemstring}>{data[index].ID}</div>
+                <div className={classes.name}>{data[index].title}</div>
+                <div className={classes.itemstring}>{data[index].urld}</div>
                 {/*
                 <div className={classes.itemstring}>
                     {data[index].kind}
                 </div>
                 */}
-                <div className={classes.itemstring}>
-                    {data[index].status}
-                </div>
-                <IconButton className={classes.iconButton} aria-label="Edit" onClick={props.handleClickEdit.bind(this,data[index].ID)}>
+                <div className={classes.itemstring}>{data[index].status}</div>
+                <IconButton
+                    className={classes.iconButton}
+                    aria-label="Edit"
+                    onClick={props.handleClickEdit.bind(this, data[index].ID)}
+                >
                     <EditIcon />
                 </IconButton>
-                <IconButton className={classes.iconButton} aria-label="Delete" onClick={props.handleDeleteAsk.bind(this, data[index].ID)}>
+                <IconButton
+                    className={classes.iconButton}
+                    aria-label="Delete"
+                    onClick={props.handleDeleteAsk.bind(this, data[index].ID)}
+                >
                     <DeleteIcon />
                 </IconButton>
             </Paper>
-            {
-                keys.map((index) => {
-                    return (
-                        <Item
-                            data={elements}
-                            index={index}
-                            key={'elementID_'+elements[index].ID}
-                            handleClickEdit={props.handleClickEdit}
-                            handleDeleteAsk={props.handleDeleteAsk}
-                            lvl={props.lvl+1}
-                        />
-                    );
-                })
-            }
+            {keys.map((index) => {
+                return (
+                    <Item
+                        data={elements}
+                        index={index}
+                        key={"elementID_" + elements[index].ID}
+                        handleClickEdit={props.handleClickEdit}
+                        handleDeleteAsk={props.handleDeleteAsk}
+                        lvl={props.lvl + 1}
+                    />
+                );
+            })}
         </div>
     );
 }
@@ -146,7 +148,7 @@ export default function ContentElements(props) {
     const [deleteitem, setDeleteItem] = React.useState(0);
     const [sortMenuAnchor, setSortMenuAnchor] = React.useState(null);
     const [searchData, setSearchData] = React.useState({
-        tree: '0',
+        tree: "0",
     });
     const [sortstring, setSortSting] = React.useState(null);
     const [itemid, setItemId] = React.useState(0);
@@ -164,46 +166,47 @@ export default function ContentElements(props) {
 
     function encodeQueryData(data) {
         const ret = [];
-        ret.push('?');
+        ret.push("?");
         for (let d in data)
-            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
-        return ret.join('&');
+            ret.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
+        return ret.join("&");
     }
 
     function handleChange() {
-        setChecked(prev => !prev);
+        setChecked((prev) => !prev);
     }
 
     React.useEffect(() => {
-        fetch('/api/contentelements' + encodeQueryData(searchData), {
+        fetch("/api/contentelements" + encodeQueryData(searchData), {
             method: "GET",
             //body: JSON.stringify(a),
             headers: {
                 "Content-Type": "application/json",
                 //"Authorization": "Bearer " + props.app.state.userdata.token
             },
-            credentials: "same-origin"
-        }).then(function(response) {
-            if (response.status === 200) {
-                response.json().then(function(res) {
-                    if (res.errors != null) {
-                        console.log(res.errors);
-                    } else {
-                        console.log(res.data);
-                        setLoaded(1);
-                        setData(res.data);
-                        setCount(res.count);
-                    }
-                });
-            } else {
-                alert(response.text());
+            credentials: "same-origin",
+        }).then(
+            function (response) {
+                if (response.status === 200) {
+                    response.json().then(function (res) {
+                        if (res.errors != null) {
+                            console.log(res.errors);
+                        } else {
+                            console.log(res.data);
+                            setLoaded(1);
+                            setData(res.data);
+                            setCount(res.count);
+                        }
+                    });
+                } else {
+                    alert(response.text());
+                }
+            },
+            function (error) {
+                alert(error.message); //=> String
             }
-        }, function(error) {
-            alert(error.message); //=> String
-        });
-
+        );
     }, [datachange]);
-
 
     function handleClickEdit(id) {
         setItemId(id);
@@ -230,33 +233,36 @@ export default function ContentElements(props) {
     }
 
     function handleDelete() {
-        fetch('/api/contentelements/' + deleteitem, {
+        fetch("/api/contentelements/" + deleteitem, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + props.app.state.userdata.token
+                Authorization: "Bearer " + props.app.state.userdata.token,
             },
-            credentials: "same-origin"
-        }).then(function(response) {
-            if (response.status === 200) {
-                response.json().then(function(res) {
-                    if (res.errors != null) {
-                        console.log(res.errors);
-                    } else {
-                        setDeleteItem(0);
-                        setDeleteOpen(false);
-                        setDataChange(datachange + 1);
-                    }
-                });
-            } else if (response.status === 401) {
-                sessionStorage.clear();
-                location.reload();
-            } else {
-                alert(response.text());
+            credentials: "same-origin",
+        }).then(
+            function (response) {
+                if (response.status === 200) {
+                    response.json().then(function (res) {
+                        if (res.errors != null) {
+                            console.log(res.errors);
+                        } else {
+                            setDeleteItem(0);
+                            setDeleteOpen(false);
+                            setDataChange(datachange + 1);
+                        }
+                    });
+                } else if (response.status === 401) {
+                    sessionStorage.clear();
+                    location.reload();
+                } else {
+                    alert(response.text());
+                }
+            },
+            function (error) {
+                alert(error.message); //=> String
             }
-        }, function(error) {
-            alert(error.message); //=> String
-        });
+        );
     }
 
     function handleSearch(e) {
@@ -281,7 +287,7 @@ export default function ContentElements(props) {
         c["sort"] = sort;
         setSearchData(c);
         setDataChange(datachange + 1);
-        setSortSting(e.target.textContent)
+        setSortSting(e.target.textContent);
         setSortMenuAnchor(null);
     }
 
@@ -298,7 +304,7 @@ export default function ContentElements(props) {
         c["tree"] = view;
         setSearchData(c);
         setDataChange(datachange + 1);
-        setViewSting(e.target.textContent)
+        setViewSting(e.target.textContent);
         setViewMenuAnchor(null);
     }
 
@@ -308,7 +314,11 @@ export default function ContentElements(props) {
 
     return (
         <div>
-            <AlertDialogSlide open={deleteopen} handleDeleteAbort={handleDeleteAbort} handleDelete={handleDelete} />
+            <AlertDialogSlide
+                open={deleteopen}
+                handleDeleteAbort={handleDeleteAbort}
+                handleDelete={handleDelete}
+            />
             <Paper className={classes.root}>
                 <div className={classes.flex}>
                     <IconButton
@@ -321,10 +331,15 @@ export default function ContentElements(props) {
                     <InputBase
                         className={classes.input}
                         placeholder="Start type for search..."
-                        inputProps={{ 'aria-label': 'Start type for search...' }}
+                        inputProps={{
+                            "aria-label": "Start type for search...",
+                        }}
                         onChange={handleSearch}
                     />
-                    <IconButton className={classes.iconButton} aria-label="Search">
+                    <IconButton
+                        className={classes.iconButton}
+                        aria-label="Search"
+                    >
                         <SearchIcon />
                     </IconButton>
                 </div>
@@ -344,7 +359,9 @@ export default function ContentElements(props) {
                         onClick={handleClickSort}
                         variant="outlined"
                         size="small"
-                        label={(sortstring == null) ? 'Sort by ID DESC' : sortstring}
+                        label={
+                            sortstring == null ? "Sort by ID DESC" : sortstring
+                        }
                     />
                     <UMenu
                         id="sort-menu"
@@ -353,19 +370,41 @@ export default function ContentElements(props) {
                         open={Boolean(sortMenuAnchor)}
                         onClose={handleCloseSort}
                     >
-                        <UMenuItem onClick={handleSelectSort.bind(this,"id")}>Sort by ID</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"-id")}>Sort by ID DESC</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"title")}>Sort by title</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"-title")}>Sort by title DESC</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"created_at")}>Sort by create date</UMenuItem>
-                        <UMenuItem onClick={handleSelectSort.bind(this,"-created_at")}>Sort by create date DESC</UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this, "id")}>
+                            Sort by ID
+                        </UMenuItem>
+                        <UMenuItem onClick={handleSelectSort.bind(this, "-id")}>
+                            Sort by ID DESC
+                        </UMenuItem>
+                        <UMenuItem
+                            onClick={handleSelectSort.bind(this, "title")}
+                        >
+                            Sort by title
+                        </UMenuItem>
+                        <UMenuItem
+                            onClick={handleSelectSort.bind(this, "-title")}
+                        >
+                            Sort by title DESC
+                        </UMenuItem>
+                        <UMenuItem
+                            onClick={handleSelectSort.bind(this, "created_at")}
+                        >
+                            Sort by create date
+                        </UMenuItem>
+                        <UMenuItem
+                            onClick={handleSelectSort.bind(this, "-created_at")}
+                        >
+                            Sort by create date DESC
+                        </UMenuItem>
                     </UMenu>
                     <Chip
                         className={classes.viewtitle}
                         onClick={handleClickView}
                         variant="outlined"
                         size="small"
-                        label={(viewstring == null) ? 'Category view' : viewstring}
+                        label={
+                            viewstring == null ? "Category view" : viewstring
+                        }
                     />
                     <UMenu
                         id="view-menu"
@@ -374,9 +413,15 @@ export default function ContentElements(props) {
                         open={Boolean(viewMenuAnchor)}
                         onClose={handleCloseView}
                     >
-                        <UMenuItem onClick={handleSelectView.bind(this,"0")}>Category view</UMenuItem>
-                        <UMenuItem onClick={handleSelectView.bind(this,"1")}>Tree view</UMenuItem>
-                        <UMenuItem onClick={handleSelectView.bind(this,"-1")}>List view</UMenuItem>
+                        <UMenuItem onClick={handleSelectView.bind(this, "0")}>
+                            Category view
+                        </UMenuItem>
+                        <UMenuItem onClick={handleSelectView.bind(this, "1")}>
+                            Tree view
+                        </UMenuItem>
+                        <UMenuItem onClick={handleSelectView.bind(this, "-1")}>
+                            List view
+                        </UMenuItem>
                     </UMenu>
                 </Grid>
                 <Grid item xs={6}>
@@ -386,31 +431,28 @@ export default function ContentElements(props) {
                         itemid={itemid}
                         open={open}
                         handleClickCreate={handleClickCreate}
-                        handleClose={handleClose}/>
+                        handleClose={handleClose}
+                    />
                 </Grid>
             </Grid>
-            {
-                (loaded == 0)
-                ?
-                    <CircularProgress color="inherit" size={20} />
-                :
-                    (data.length > 0)
-                    ?
-                        Object.keys(data).map((index) => {
-                            return (
-                                <Item
-                                    data={data}
-                                    index={index}
-                                    key={'elementID_'+data[index].ID}
-                                    handleClickEdit={handleClickEdit}
-                                    handleDeleteAsk={handleDeleteAsk}
-                                    lvl={0}
-                                />
-                            );
-                        })
-                    :
-                        <div>No result found</div>
-            }
+            {loaded == 0 ? (
+                <CircularProgress color="inherit" size={20} />
+            ) : data.length > 0 ? (
+                Object.keys(data).map((index) => {
+                    return (
+                        <Item
+                            data={data}
+                            index={index}
+                            key={"elementID_" + data[index].ID}
+                            handleClickEdit={handleClickEdit}
+                            handleDeleteAsk={handleDeleteAsk}
+                            lvl={0}
+                        />
+                    );
+                })
+            ) : (
+                <div>No result found</div>
+            )}
             <TablePagination
                 component="nav"
                 rowsPerPageOptions={[5, 10, 25]}
@@ -425,8 +467,8 @@ export default function ContentElements(props) {
                     setPage(p);
                     console.log(p);
                 }}
-                onChangeRowsPerPage = {e => {
-                    setPerPage(e.target.value)
+                onChangeRowsPerPage={(e) => {
+                    setPerPage(e.target.value);
                     var c = searchData;
                     c["limit"] = e.target.value;
                     setSearchData(c);
